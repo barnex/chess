@@ -27,13 +27,12 @@ func (b *Board) At(p Pos) Piece {
 func (b *Board) String() string {
 	var buf bytes.Buffer
 	for r := 7; r >= 0; r-- {
+		fmt.Fprint(&buf, r+1)
 		for c := 0; c < 8; c++ {
-			fmt.Fprint(&buf, b.At(RC(r, c)))
-			if c < 7 {
-				fmt.Fprint(&buf, " ")
-			}
+			fmt.Fprint(&buf, " ", b.At(RC(r, c)))
 		}
 		fmt.Fprintln(&buf)
 	}
+	fmt.Fprint(&buf, "  a b c d e f g h")
 	return buf.String()
 }
