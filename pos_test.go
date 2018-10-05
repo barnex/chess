@@ -19,9 +19,9 @@ func ExamplePos() {
 	}
 
 	//Output:
-	//->1a->2b->3c->4d->5e->6f->7g->8h
-	//->1h->1g->1f->1e->1d->1c->1b->1a
-	//->8h->7g->6f->5e->4d->3c->2b->1a
+	//->a1->b2->c3->d4->e5->f6->g7->h8
+	//->h1->g1->f1->e1->d1->c1->b1->a1
+	//->h8->g7->f6->e5->d4->c3->b2->a1
 }
 
 func TestRC(t *testing.T) {

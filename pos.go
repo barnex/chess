@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 type Pos [2]int8
 
@@ -35,7 +38,7 @@ func (p Pos) String() string {
 	if !p.Valid() {
 		return fmt.Sprintf("(%v,%v)", p.Row(), p.Col())
 	}
-	return "12345678"[p.Row():p.Row()+1] + "abcdefgh"[p.Col():p.Col()+1]
+	return "abcdefgh"[p.Col():p.Col()+1] + "12345678"[p.Row():p.Row()+1]
 }
 
 func (p Pos) Index() int {
@@ -50,4 +53,11 @@ func RC(r, c int) Pos {
 	//	panic(fmt.Sprintf("pos out of bounds: (%v, %v)", r, c))
 	//}
 	return Pos{int8(r), int8(c)}
+}
+
+func MustParse(p string) Pos {
+	return Pos{
+		int8(strings.Index("12345678", p[1:2])),
+		int8(strings.Index("abcdefgh", p[0:1])),
+	}
 }
