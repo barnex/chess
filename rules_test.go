@@ -32,8 +32,20 @@ func TestRules1(t *testing.T) {
 		sort.Strings(c.want)
 		if !reflect.DeepEqual(have, c.want) {
 			t.Errorf("moves %v: have: %v, want: %v", src, have, c.want)
+			mark(b, have)
+		} else {
+			fmt.Printf("OK: moves %v: %v\n", src, have)
+			mark(b, have)
 		}
 	}
+}
+
+func mark(b *Board, p []string) {
+	c := b.Copy()
+	for _, p := range p {
+		c[P(p).Index()] = 100
+	}
+	fmt.Println(c)
 }
 
 func Sort(p []Pos) {
