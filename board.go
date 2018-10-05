@@ -35,7 +35,7 @@ func (b *Board) String() string {
 }
 
 func (b *Board) At(p Pos) Piece {
-	return b[p]
+	return b[p.Index()]
 }
 
 func (b *Board) Start() Pos { return 0 }
