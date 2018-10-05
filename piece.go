@@ -17,6 +17,11 @@ const (
 	BK Piece = -WK
 )
 
+const (
+	White = 1
+	Black = -1
+)
+
 // https://en.wikipedia.org/wiki/Chess_symbols_in_Unicode
 var pieceStr = map[Piece]rune{
 	0:  '·',
@@ -35,5 +40,19 @@ var pieceStr = map[Piece]rune{
 }
 
 func (p Piece) String() string {
-	return string(pieceStr[p])
+	if r, ok := pieceStr[p]; ok {
+		return string(r)
+	}
+	return "x"
+}
+
+func (p Piece) Color() int {
+	switch {
+	case p > 0:
+		return White
+	case p < 0:
+		return Black
+	default:
+		return 0
+	}
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"reflect"
 	"sort"
 	"testing"
@@ -8,14 +9,19 @@ import (
 
 func TestRules1(t *testing.T) {
 	b := NewBoard()
+	b.Move(P("a7"), P("a3"))
+
+	fmt.Println(b)
 
 	for _, c := range []struct {
 		src  string
 		want []string
 	}{
-		{"a2", []string{"a3", "a4"}},
+		{"a2", nil},
+		{"b2", []string{"a3", "b3", "b4"}},
+		{"c2", []string{"c3", "c4"}},
 	} {
-		src := MustParse(c.src)
+		src := P(c.src)
 		var h []Pos
 		Moves(b, src, &h)
 		have := make([]string, len(h))

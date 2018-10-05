@@ -24,6 +24,11 @@ func (b *Board) At(p Pos) Piece {
 	return b[p.Index()]
 }
 
+func (b *Board) Move(src, dst Pos) {
+	b[dst.Index()] = b[src.Index()]
+	b[src.Index()] = 00
+}
+
 func (b *Board) String() string {
 	var buf bytes.Buffer
 	for r := 7; r >= 0; r-- {

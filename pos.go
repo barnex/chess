@@ -55,7 +55,7 @@ func RC(r, c int) Pos {
 	return Pos{int8(r), int8(c)}
 }
 
-func MustParse(p string) Pos {
+func P(p string) Pos {
 	return Pos{
 		int8(strings.Index("12345678", p[1:2])),
 		int8(strings.Index("abcdefgh", p[0:1])),
