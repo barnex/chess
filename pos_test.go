@@ -6,19 +6,22 @@ import (
 )
 
 func ExamplePos() {
-	for p := RC(0, 0); p.Valid(); p = p.Add(Diag1) {
-		fmt.Println(p)
+	for p := RC(0, 0); p.Valid(); p = p.Add(FrontRight) {
+		fmt.Print("->", p)
+	}
+	fmt.Println()
+	for p := RC(0, 7); p.Valid(); p = p.Add(Left) {
+		fmt.Print("->", p)
+	}
+	fmt.Println()
+	for p := RC(7, 7); p.Valid(); p = p.Add(BackLeft) {
+		fmt.Print("->", p)
 	}
 
 	//Output:
-	//1a
-	//2b
-	//3c
-	//4d
-	//5e
-	//6f
-	//7g
-	//8h
+	//->1a->2b->3c->4d->5e->6f->7g->8h
+	//->1h->1g->1f->1e->1d->1c->1b->1a
+	//->8h->7g->6f->5e->4d->3c->2b->1a
 }
 
 func TestRC(t *testing.T) {

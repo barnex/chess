@@ -9,14 +9,14 @@ type Board [64]Piece
 
 func NewBoard() *Board {
 	return &Board{
-		BR, BN, BB, BQ, BK, BB, BN, BR,
-		BP, BP, BP, BP, BP, BP, BP, BP,
-		00, 00, 00, 00, 00, 00, 00, 00,
-		00, 00, 00, 00, 00, 00, 00, 00,
-		00, 00, 00, 00, 00, 00, 00, 00,
-		00, 00, 00, 00, 00, 00, 00, 00,
-		WP, WP, WP, WP, WP, WP, WP, WP,
 		WR, WN, WB, WQ, WK, WB, WN, WR,
+		WP, WP, WP, WP, WP, WP, WP, WP,
+		00, 00, 00, 00, 00, 00, 00, 00,
+		00, 00, 00, 00, 00, 00, 00, 00,
+		00, 00, 00, 00, 00, 00, 00, 00,
+		00, 00, 00, 00, 00, 00, 00, 00,
+		BP, BP, BP, BP, BP, BP, BP, BP,
+		BR, BN, BB, BQ, BK, BB, BN, BR,
 	}
 }
 
@@ -38,5 +38,5 @@ func (b *Board) At(p Pos) Piece {
 	return b[p.Index()]
 }
 
-func (b *Board) Start() Pos { return 0 }
-func (b *Board) End() Pos   { return Pos(len(b)) }
+//func (b *Board) Start() Pos { return  }
+//func (b *Board) End() Pos   { return Pos(len(b)) }

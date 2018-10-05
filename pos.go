@@ -2,33 +2,33 @@ package main
 
 import "fmt"
 
-type Pos uint8
+type Pos [2]int8
 
-const (
-	Front Pos = 0x01
-	Back  Pos = 0x0F
-	Right Pos = 0x10
-	Left  Pos = 0xF0
-	Diag1 Pos = Front + Right
-	Diag2 Pos = Front + Left
-	Diag3 Pos = Back + Right
-	Diag4 Pos = Back + Left
+var (
+	Front      = Pos{1, 0}
+	Back       = Pos{-1, 0}
+	Right      = Pos{0, 1}
+	Left       = Pos{0, -1}
+	FrontRight = Front.Add(Right)
+	FrontLeft  = Front.Add(Left)
+	BackRight  = Back.Add(Right)
+	BackLeft   = Back.Add(Left)
 )
 
 func (p Pos) Row() int {
-	return int((p & 0xF0) >> 4)
+	return int(p[0])
 }
 
 func (p Pos) Col() int {
-	return int(p & 0x0F)
+	return int(p[1])
 }
 
 func (p Pos) Valid() bool {
-	return (p & 0x88) == 0
+	return (uint8(p[0])|uint8(p[1]))&0xF8 == 0
 }
 
 func (p Pos) Add(d Pos) Pos {
-	return p + d
+	return Pos{p[0] + d[0], p[1] + d[1]}
 }
 
 func (p Pos) String() string {
@@ -42,12 +42,12 @@ func (p Pos) Index() int {
 	if !p.Valid() {
 		panic(fmt.Errorf("pos out of bounds: %v", p))
 	}
-	return int(((p & 0xF0) >> 1) | (p & 0x0F))
+	return int(p[0]<<3 | p[1])
 }
 
 func RC(r, c int) Pos {
 	//if r < 0 || r > 7 || c < 0 || c > 7 {
 	//	panic(fmt.Sprintf("pos out of bounds: (%v, %v)", r, c))
 	//}
-	return Pos(r<<4 | c)
+	return Pos{int8(r), int8(c)}
 }
