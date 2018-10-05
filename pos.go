@@ -4,6 +4,17 @@ import "fmt"
 
 type Pos uint8
 
+const (
+	Front Pos = 0x01
+	Back  Pos = 0x0F
+	Right Pos = 0x10
+	Left  Pos = 0xF0
+	Diag1 Pos = Front + Right
+	Diag2 Pos = Front + Left
+	Diag3 Pos = Back + Right
+	Diag4 Pos = Back + Left
+)
+
 func (p Pos) Row() int {
 	return int((p & 0xF0) >> 4)
 }
@@ -14,6 +25,17 @@ func (p Pos) Col() int {
 
 func (p Pos) Valid() bool {
 	return (p & 0x88) == 0
+}
+
+func (p Pos) Add(d Pos) Pos {
+	return p + d
+}
+
+func (p Pos) String() string {
+	if !p.Valid() {
+		return fmt.Sprintf("(%v,%v)", p.Row(), p.Col())
+	}
+	return "12345678"[p.Row():p.Row()+1] + "abcdefgh"[p.Col():p.Col()+1]
 }
 
 func (p Pos) Index() int {

@@ -1,6 +1,25 @@
 package main
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
+
+func ExamplePos() {
+	for p := RC(0, 0); p.Valid(); p = p.Add(Diag1) {
+		fmt.Println(p)
+	}
+
+	//Output:
+	//1a
+	//2b
+	//3c
+	//4d
+	//5e
+	//6f
+	//7g
+	//8h
+}
 
 func TestRC(t *testing.T) {
 	for r := 0; r < 8; r++ {
