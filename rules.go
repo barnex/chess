@@ -8,6 +8,23 @@ func Moves(b *Board, src Pos, dst *[]Pos) {
 		WPMoves(b, src, dst)
 	case bP:
 		BPMoves(b, src, dst)
+	case wN, bN:
+		NMoves(b, src, dst)
+	}
+}
+
+func NMoves(b *Board, src Pos, dst *[]Pos) {
+	d := []Pos{
+		{-2, -1}, {-1, -2},
+		{+2, -1}, {+1, -2},
+		{-2, +1}, {-1, +2},
+		{+2, +1}, {+1, +2}}
+	me := b.At(src)
+	for _, d := range d {
+		p := src.Add(d)
+		if p.Valid() && b.At(p).Color() != me.Color() {
+			*dst = append(*dst, p)
+		}
 	}
 }
 
