@@ -1,4 +1,4 @@
-package main
+package chess
 
 func ExampleRulesBP() {
 	b := Upright(&Board{

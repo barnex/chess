@@ -1,4 +1,4 @@
-package main
+package chess
 
 func Moves(b *Board, src Pos, dst *[]Pos) {
 	switch b.At(src) {

@@ -1,4 +1,4 @@
-package main
+package chess
 
 type Piece int8
 
