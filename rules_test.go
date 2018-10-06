@@ -1,53 +1,116 @@
 package main
 
-import (
-	"fmt"
-	"reflect"
-	"sort"
-	"testing"
-)
+func ExampleRulesPW() {
+	b := Upright(&Board{
+		bR, bN, bB, bQ, bK, bB, bN, bR,
+		bP, bP, bP, 00, bP, bP, bP, bP,
+		00, wP, 00, 00, 00, 00, bB, 00,
+		00, 00, 00, 00, 00, 00, 00, 00,
+		00, 00, 00, wP, 00, 00, 00, 00,
+		00, 00, 00, bP, 00, 00, 00, 00,
+		wP, 00, wP, wP, wP, wP, wP, wP,
+		wR, wN, wB, wQ, wK, wB, wN, wR,
+	})
 
-func TestRules1(t *testing.T) {
-	b := NewBoard()
-	b.Move(P("a7"), P("a3"))
+	markAllMoves(b, wP)
 
-	fmt.Println(b)
-
-	for _, c := range []struct {
-		src  string
-		want []string
-	}{
-		{"a2", nil},
-		{"b2", []string{"a3", "b3", "b4"}},
-		{"c2", []string{"c3", "c4"}},
-	} {
-		src := P(c.src)
-		var h []Pos
-		Moves(b, src, &h)
-		have := make([]string, len(h))
-		for i, h := range h {
-			have[i] = h.String()
-		}
-		sort.Strings(have)
-		sort.Strings(c.want)
-		if !reflect.DeepEqual(have, c.want) {
-			t.Errorf("moves %v: have: %v, want: %v", src, have, c.want)
-			mark(b, have)
-		} else {
-			fmt.Printf("OK: moves %v: %v\n", src, have)
-			mark(b, have)
-		}
-	}
-}
-
-func mark(b *Board, p []string) {
-	c := b.Copy()
-	for _, p := range p {
-		c[P(p).Index()] = 100
-	}
-	fmt.Println(c)
-}
-
-func Sort(p []Pos) {
-	sort.Slice(p, func(i, j int) bool { return p[i].String() < p[j].String() })
+	//Output:
+	// moves for ♙a2
+	// 8 ♜ ♞ ♝ ♛ ♚ ♝ ♞ ♜
+	// 7 ♟ ♟ ♟ · ♟ ♟ ♟ ♟
+	// 6 · ♙ · · · · ♝ ·
+	// 5 · · · · · · · ·
+	// 4 x · · ♙ · · · ·
+	// 3 x · · ♟ · · · ·
+	// 2 ♙ · ♙ ♙ ♙ ♙ ♙ ♙
+	// 1 ♖ ♘ ♗ ♕ ♔ ♗ ♘ ♖
+	//   a b c d e f g h
+	//
+	// moves for ♙c2
+	// 8 ♜ ♞ ♝ ♛ ♚ ♝ ♞ ♜
+	// 7 ♟ ♟ ♟ · ♟ ♟ ♟ ♟
+	// 6 · ♙ · · · · ♝ ·
+	// 5 · · · · · · · ·
+	// 4 · · x ♙ · · · ·
+	// 3 · · x x · · · ·
+	// 2 ♙ · ♙ ♙ ♙ ♙ ♙ ♙
+	// 1 ♖ ♘ ♗ ♕ ♔ ♗ ♘ ♖
+	//   a b c d e f g h
+	//
+	// moves for ♙d2
+	// 8 ♜ ♞ ♝ ♛ ♚ ♝ ♞ ♜
+	// 7 ♟ ♟ ♟ · ♟ ♟ ♟ ♟
+	// 6 · ♙ · · · · ♝ ·
+	// 5 · · · · · · · ·
+	// 4 · · · ♙ · · · ·
+	// 3 · · · ♟ · · · ·
+	// 2 ♙ · ♙ ♙ ♙ ♙ ♙ ♙
+	// 1 ♖ ♘ ♗ ♕ ♔ ♗ ♘ ♖
+	//   a b c d e f g h
+	//
+	// moves for ♙e2
+	// 8 ♜ ♞ ♝ ♛ ♚ ♝ ♞ ♜
+	// 7 ♟ ♟ ♟ · ♟ ♟ ♟ ♟
+	// 6 · ♙ · · · · ♝ ·
+	// 5 · · · · · · · ·
+	// 4 · · · ♙ x · · ·
+	// 3 · · · x x · · ·
+	// 2 ♙ · ♙ ♙ ♙ ♙ ♙ ♙
+	// 1 ♖ ♘ ♗ ♕ ♔ ♗ ♘ ♖
+	//   a b c d e f g h
+	//
+	// moves for ♙f2
+	// 8 ♜ ♞ ♝ ♛ ♚ ♝ ♞ ♜
+	// 7 ♟ ♟ ♟ · ♟ ♟ ♟ ♟
+	// 6 · ♙ · · · · ♝ ·
+	// 5 · · · · · · · ·
+	// 4 · · · ♙ · x · ·
+	// 3 · · · ♟ · x · ·
+	// 2 ♙ · ♙ ♙ ♙ ♙ ♙ ♙
+	// 1 ♖ ♘ ♗ ♕ ♔ ♗ ♘ ♖
+	//   a b c d e f g h
+	//
+	// moves for ♙g2
+	// 8 ♜ ♞ ♝ ♛ ♚ ♝ ♞ ♜
+	// 7 ♟ ♟ ♟ · ♟ ♟ ♟ ♟
+	// 6 · ♙ · · · · ♝ ·
+	// 5 · · · · · · · ·
+	// 4 · · · ♙ · · x ·
+	// 3 · · · ♟ · · x ·
+	// 2 ♙ · ♙ ♙ ♙ ♙ ♙ ♙
+	// 1 ♖ ♘ ♗ ♕ ♔ ♗ ♘ ♖
+	//   a b c d e f g h
+	//
+	// moves for ♙h2
+	// 8 ♜ ♞ ♝ ♛ ♚ ♝ ♞ ♜
+	// 7 ♟ ♟ ♟ · ♟ ♟ ♟ ♟
+	// 6 · ♙ · · · · ♝ ·
+	// 5 · · · · · · · ·
+	// 4 · · · ♙ · · · x
+	// 3 · · · ♟ · · · x
+	// 2 ♙ · ♙ ♙ ♙ ♙ ♙ ♙
+	// 1 ♖ ♘ ♗ ♕ ♔ ♗ ♘ ♖
+	//   a b c d e f g h
+	//
+	// moves for ♙d4
+	// 8 ♜ ♞ ♝ ♛ ♚ ♝ ♞ ♜
+	// 7 ♟ ♟ ♟ · ♟ ♟ ♟ ♟
+	// 6 · ♙ · · · · ♝ ·
+	// 5 · · · x · · · ·
+	// 4 · · · ♙ · · · ·
+	// 3 · · · ♟ · · · ·
+	// 2 ♙ · ♙ ♙ ♙ ♙ ♙ ♙
+	// 1 ♖ ♘ ♗ ♕ ♔ ♗ ♘ ♖
+	//   a b c d e f g h
+	//
+	// moves for ♙b6
+	// 8 ♜ ♞ ♝ ♛ ♚ ♝ ♞ ♜
+	// 7 x ♟ x · ♟ ♟ ♟ ♟
+	// 6 · ♙ · · · · ♝ ·
+	// 5 · · · · · · · ·
+	// 4 · · · ♙ · · · ·
+	// 3 · · · ♟ · · · ·
+	// 2 ♙ · ♙ ♙ ♙ ♙ ♙ ♙
+	// 1 ♖ ♘ ♗ ♕ ♔ ♗ ♘ ♖
+	//   a b c d e f g h
 }

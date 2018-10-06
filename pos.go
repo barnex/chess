@@ -34,6 +34,14 @@ func (p Pos) Add(d Pos) Pos {
 	return Pos{p[0] + d[0], p[1] + d[1]}
 }
 
+func (p Pos) Next() Pos {
+	n := p.Add(Pos{0, 1})
+	if n.Col() == 8 {
+		n = RC(p.Row()+1, 0)
+	}
+	return n
+}
+
 func (p Pos) String() string {
 	if !p.Valid() {
 		return fmt.Sprintf("(%v,%v)", p.Row(), p.Col())

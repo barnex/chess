@@ -3,18 +3,18 @@ package main
 type Piece int8
 
 const (
-	WP Piece = 1
-	WR Piece = 2
-	WN Piece = 3
-	WB Piece = 4
-	WQ Piece = 5
-	WK Piece = 6
-	BP Piece = -WP
-	BR Piece = -WR
-	BN Piece = -WN
-	BB Piece = -WB
-	BQ Piece = -WQ
-	BK Piece = -WK
+	wP Piece = 1
+	wR Piece = 2
+	wN Piece = 3
+	wB Piece = 4
+	wQ Piece = 5
+	wK Piece = 6
+	bP Piece = -wP
+	bR Piece = -wR
+	bN Piece = -wN
+	bB Piece = -wB
+	bQ Piece = -wQ
+	bK Piece = -wK
 )
 
 const (
@@ -25,25 +25,25 @@ const (
 // https://en.wikipedia.org/wiki/Chess_symbols_in_Unicode
 var pieceStr = map[Piece]rune{
 	0:  '·',
-	WP: '\u2659',
-	WR: '\u2656',
-	WN: '\u2658',
-	WB: '\u2657',
-	WQ: '\u2655',
-	WK: '\u2654',
-	BP: '\u265F',
-	BR: '\u265C',
-	BN: '\u265E',
-	BB: '\u265D',
-	BQ: '\u265B',
-	BK: '\u265A',
+	wP: '\u2659',
+	wR: '\u2656',
+	wN: '\u2658',
+	wB: '\u2657',
+	wQ: '\u2655',
+	wK: '\u2654',
+	bP: '\u265F',
+	bR: '\u265C',
+	bN: '\u265E',
+	bB: '\u265D',
+	bQ: '\u265B',
+	bK: '\u265A',
 }
 
 func (p Piece) String() string {
 	if r, ok := pieceStr[p]; ok {
 		return string(r)
 	}
-	return "x"
+	return "x" // for position marking in tests
 }
 
 func (p Piece) Color() int {
