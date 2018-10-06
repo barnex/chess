@@ -12,8 +12,8 @@ func ExampleRulesR() {
 		00, 00, 00, 00, 00, 00, 00, 00,
 	})
 
-	markAllMoves(b, wR)
-	markAllMoves(b, bR)
+	MarkAllMoves(b, wR)
+	MarkAllMoves(b, bR)
 
 	//Output:
 	// moves for ♖c2

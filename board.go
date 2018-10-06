@@ -46,6 +46,26 @@ func (b *Board) Copy() *Board {
 	return c
 }
 
+func (b *Board) Winner() Color {
+	var haveWK, haveBK bool
+	for _, p := range b {
+		if p == wK {
+			haveWK = true
+		}
+		if p == bK {
+			haveBK = true
+		}
+	}
+	switch {
+	case !haveWK:
+		return Black
+	case !haveBK:
+		return White
+	default:
+		return 0
+	}
+}
+
 func (b *Board) String() string {
 	var buf bytes.Buffer
 	for r := 7; r >= 0; r-- {

@@ -12,7 +12,7 @@ func ExampleRulesQ() {
 		00, 00, 00, 00, 00, 00, 00, 00,
 	})
 
-	markAllMoves(b, wQ, bQ)
+	MarkAllMoves(b, wQ, bQ)
 
 	//Output:
 	// moves for ♕f3

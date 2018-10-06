@@ -12,7 +12,7 @@ func ExampleRulesK() {
 		00, 00, 00, 00, 00, 00, 00, 00,
 	})
 
-	markAllMoves(b, wK, bK)
+	MarkAllMoves(b, wK, bK)
 
 	//Output:
 	// 	moves for ♔f3

@@ -5,7 +5,7 @@ import (
 	"sort"
 )
 
-func markAllMoves(b *Board, typ ...Piece) {
+func MarkAllMoves(b *Board, typ ...Piece) {
 	for _, typ := range typ {
 		for p := RC(0, 0); p.Valid(); p = p.Next() {
 			if b.At(p) == typ {

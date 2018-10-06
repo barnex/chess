@@ -12,7 +12,7 @@ func ExampleRulesN() {
 		00, 00, 00, 00, 00, 00, 00, 00,
 	})
 
-	markAllMoves(b, wN, bN)
+	MarkAllMoves(b, wN, bN)
 
 	//Output:
 	// moves for ♘d3
@@ -36,5 +36,4 @@ func ExampleRulesN() {
 	// 2 · · · · · ♜ · ·
 	// 1 · · · · · · · ·
 	//   a b c d e f g h
-
 }

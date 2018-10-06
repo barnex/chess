@@ -12,7 +12,7 @@ func ExampleRulesBP() {
 		wR, wN, wB, wQ, wK, wB, wN, wR,
 	})
 
-	markAllMoves(b, bP)
+	MarkAllMoves(b, bP)
 
 	//Output:
 	// moves for ♟d3
@@ -117,7 +117,7 @@ func ExampleRulesWP() {
 		wR, wN, wB, wQ, wK, wB, wN, wR,
 	})
 
-	markAllMoves(b, wP)
+	MarkAllMoves(b, wP)
 
 	//Output:
 	// moves for ♙a2
