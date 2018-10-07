@@ -9,8 +9,8 @@ import (
 
 func main() {
 
-	engineA := chess.EHeihei()
-	engineB := chess.EWorf()
+	engineA := chess.EWorf(chess.Heuristic0)
+	engineB := chess.EWorf(chess.Heuristic1)
 
 	var (
 		totalMoves int

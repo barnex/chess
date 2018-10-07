@@ -5,12 +5,15 @@ import (
 )
 
 // EWorf thinks 1 move ahead.
-func EWorf() Engine {
-	return &eWorf{newRand()}
+func EWorf(h Heuristic) Engine {
+	return &eWorf{newRand(), h}
 }
+
+type Heuristic func(b *Board, c Color) float64
 
 type eWorf struct {
 	rnd *rand.Rand
+	h   Heuristic
 }
 
 func (e *eWorf) Move(b *Board, c Color) Move {
@@ -18,10 +21,10 @@ func (e *eWorf) Move(b *Board, c Color) Move {
 
 	var (
 		bestMove  = moves[e.rnd.Intn(len(moves))]
-		bestScore = scoreMove(b, bestMove, c)
+		bestScore = e.scoreMove(b, bestMove, c)
 	)
 	for _, m := range moves {
-		if s := scoreMove(b, m, c); s.GT(bestScore) {
+		if s := e.scoreMove(b, m, c); s.GT(bestScore) {
 			bestScore = s
 			bestMove = m
 		}
@@ -36,13 +39,13 @@ func (e *eWorf) Move(b *Board, c Color) Move {
 //
 //}
 
-func scoreMove(b *Board, m Move, c Color) Value {
+func (e *eWorf) scoreMove(b *Board, m Move, c Color) Value {
 	b2 := b.Copy()
 	b2.Move(m.Src, m.Dst)
-	return scoreBoard(b2, c)
+	return e.scoreBoard(b2, c)
 }
 
-func scoreBoard(b *Board, c Color) Value {
+func (e *eWorf) scoreBoard(b *Board, c Color) Value {
 	w := b.Winner()
 	if w == c {
 		return Value{Win: true}
@@ -50,9 +53,17 @@ func scoreBoard(b *Board, c Color) Value {
 	if w == -c {
 		return Value{Lose: true}
 	}
-	return Value{Heuristic: Heuristic(b, c)}
+	return Value{Heuristic: e.h(b, c)}
 }
 
-func Heuristic(b *Board, c Color) float64 {
+func Heuristic0(b *Board, c Color) float64 {
 	return 0
+}
+
+func Heuristic1(b *Board, c Color) float64 {
+	value := 0.0
+	for _, p := range b {
+		value += float64(p.Color() * c)
+	}
+	return value
 }
