@@ -4,19 +4,17 @@ import (
 	"math/rand"
 )
 
-// EWorf thinks 1 move ahead.
-func EWorf(h Heuristic) Engine {
-	return &eWorf{newRand(), h}
+// Minimax thinks 1 move ahead.
+func Minimax(h Heuristic) Engine {
+	return &minimax{newRand(), h}
 }
 
-type Heuristic func(b *Board, c Color) float64
-
-type eWorf struct {
+type minimax struct {
 	rnd *rand.Rand
 	h   Heuristic
 }
 
-func (e *eWorf) Move(b *Board, c Color) Move {
+func (e *minimax) Move(b *Board, c Color) Move {
 	moves := allMoves(b, c)
 
 	var (
@@ -39,13 +37,13 @@ func (e *eWorf) Move(b *Board, c Color) Move {
 //
 //}
 
-func (e *eWorf) scoreMove(b *Board, m Move, c Color) Value {
+func (e *minimax) scoreMove(b *Board, m Move, c Color) Value {
 	b2 := b.Copy()
 	b2.Move(m.Src, m.Dst)
 	return e.scoreBoard(b2, c)
 }
 
-func (e *eWorf) scoreBoard(b *Board, c Color) Value {
+func (e *minimax) scoreBoard(b *Board, c Color) Value {
 	w := b.Winner()
 	if w == c {
 		return Value{Win: true}
@@ -54,16 +52,4 @@ func (e *eWorf) scoreBoard(b *Board, c Color) Value {
 		return Value{Lose: true}
 	}
 	return Value{Heuristic: e.h(b, c)}
-}
-
-func Heuristic0(b *Board, c Color) float64 {
-	return 0
-}
-
-func Heuristic1(b *Board, c Color) float64 {
-	value := 0.0
-	for _, p := range b {
-		value += float64(p.Color() * c)
-	}
-	return value
 }
