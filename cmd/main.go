@@ -9,8 +9,8 @@ import (
 
 func main() {
 
-	engineA := chess.ERandom()
-	engineB := chess.ERandom()
+	engineA := chess.EHeihei()
+	engineB := chess.EWorf()
 
 	var (
 		totalMoves int

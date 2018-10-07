@@ -5,15 +5,16 @@ import (
 	"time"
 )
 
-func ERandom() Engine {
-	return &eRandom{newRand()}
+// EHeihei makes random moves.
+func EHeihei() Engine {
+	return &eHeihei{newRand()}
 }
 
-type eRandom struct {
+type eHeihei struct {
 	rnd *rand.Rand
 }
 
-func (e *eRandom) Move(b *Board, c Color) Move {
+func (e *eHeihei) Move(b *Board, c Color) Move {
 	moves := allMoves(b, c)
 	return moves[e.rnd.Intn(len(moves))]
 }
