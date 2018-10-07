@@ -21,7 +21,7 @@ func (e *eWorf) Move(b *Board, c Color) Move {
 		bestScore = scoreMove(b, bestMove, c)
 	)
 	for _, m := range moves {
-		if s := scoreMove(b, m, c); s > bestScore {
+		if s := scoreMove(b, m, c); s.GT(bestScore) {
 			bestScore = s
 			bestMove = m
 		}
@@ -29,12 +29,30 @@ func (e *eWorf) Move(b *Board, c Color) Move {
 	return bestMove
 }
 
-func scoreMove(b *Board, m Move, c Color) float64 {
+//func scoreRec(d int, b *Board, m Move, c Color) float64 {
+//	if d == 0 {
+//		return scoreMove(b, m, c)
+//	}
+//
+//}
+
+func scoreMove(b *Board, m Move, c Color) Value {
 	b2 := b.Copy()
 	b2.Move(m.Src, m.Dst)
 	return scoreBoard(b2, c)
 }
 
-func scoreBoard(b *Board, c Color) float64 {
-	return float64(b.Winner() * c)
+func scoreBoard(b *Board, c Color) Value {
+	w := b.Winner()
+	if w == c {
+		return Value{Win: true}
+	}
+	if w == -c {
+		return Value{Lose: true}
+	}
+	return Value{Heuristic: Heuristic(b, c)}
+}
+
+func Heuristic(b *Board, c Color) float64 {
+	return 0
 }
