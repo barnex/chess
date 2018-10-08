@@ -9,14 +9,17 @@ import (
 
 func main() {
 
-	engineA := chess.Random()
-	engineB := chess.Minimax(chess.Heuristic1)
+	engineA := chess.Minimax(0, chess.Heuristic1)
+	engineB := chess.Minimax(1, chess.Heuristic1)
 
 	var (
 		totalMoves int
 		wins       [3]int
 	)
-	for {
+
+	numGames := 100
+
+	for i := 0; i < numGames; i++ {
 		w1, m1 := chess.Game(engineA, engineB)
 		totalMoves += m1
 		w2, m2 := chess.Game(engineB, engineA)

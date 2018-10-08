@@ -4,14 +4,14 @@ import (
 	"math/rand"
 )
 
-// Minimax thinks 1 move ahead.
-func Minimax(h Heuristic) Engine {
-	return &minimax{newRand(), h}
+func Minimax(depth int, h Heuristic) Engine {
+	return &minimax{newRand(), depth, h}
 }
 
 type minimax struct {
-	rnd *rand.Rand
-	h   Heuristic
+	rnd   *rand.Rand
+	depth int
+	h     Heuristic
 }
 
 func (e *minimax) Move(b *Board, c Color) Move {
@@ -23,7 +23,7 @@ func (e *minimax) Move(b *Board, c Color) Move {
 	)
 	for _, m := range moves {
 		b2 := b.WithMove(m)
-		s := e.negamax(b2, 0, c)
+		s := e.negamax(b2, e.depth, c, true)
 		//fmt.Println("score ", i, s)
 		if s.GT(bestScore) {
 			bestScore = s
@@ -33,20 +33,48 @@ func (e *minimax) Move(b *Board, c Color) Move {
 	return bestMove
 }
 
-//function negamax(node, depth, color) is
-//    if depth = 0 or node is a terminal node then
-//        return color × the heuristic value of node
-//    value := −∞
-//    for each child of node do
-//        value := max(value, −negamax(child, depth − 1, −color))
-//    return value
-func (e *minimax) negamax(b *Board, depth int, c Color) Value {
+//function minimax(node, depth, maximizingPlayer) is
+// if depth = 0 or node is a terminal node then
+//     return the heuristic value of node
+// if maximizingPlayer then
+//     value := −∞
+//     for each child of node do
+//         value := max(value, minimax(child, depth − 1, FALSE))
+//     return value
+// else (* minimizing player *)
+//     value := +∞
+//     for each child of node do
+//         value := min(value, minimax(child, depth − 1, TRUE))
+//     return value
+func (e *minimax) negamax(b *Board, depth int, c Color, max bool) Value {
 	if depth == 0 {
 		return e.heuristicValue(b).Mul(c)
 	}
-	panic("TODO")
-	//counterMoves := allMoves(b, -c)
-	//value :=
+
+	counterMoves := allMoves(b, -c)
+
+	var vs []Value
+	if max {
+		value := MinusInf.Mul(-1)
+		for _, m := range counterMoves {
+			b2 := b.WithMove(m)
+			v := e.heuristicValue(b2).Mul(c)
+			vs = append(vs, v)
+			value = Min(value, v)
+		}
+		//fmt.Println(vs)
+		return value
+	} else {
+		value := MinusInf.Mul(-1)
+		for _, m := range counterMoves {
+			b2 := b.WithMove(m)
+			v := e.heuristicValue(b2).Mul(c)
+			vs = append(vs, v)
+			value = Max(value, v)
+		}
+		//fmt.Println(vs)
+		return value
+	}
 }
 
 func (e *minimax) heuristicValue(b *Board) Value {
