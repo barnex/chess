@@ -9,7 +9,7 @@ import (
 
 func main() {
 
-	engineA := chess.Minimax(chess.Heuristic0)
+	engineA := chess.Random()
 	engineB := chess.Minimax(chess.Heuristic1)
 
 	var (

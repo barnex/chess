@@ -35,12 +35,14 @@ func (b *Board) At(p Pos) Piece {
 	return b[p.Index()]
 }
 
-func (b *Board) Move(src, dst Pos) {
-	b[dst.Index()] = b[src.Index()]
-	b[src.Index()] = 00
+func (b *Board) WithMove(m Move) *Board {
+	c := b.copy()
+	c[m.Dst.Index()] = b[m.Src.Index()]
+	c[m.Src.Index()] = 00
+	return c
 }
 
-func (b *Board) Copy() *Board {
+func (b *Board) copy() *Board {
 	c := new(Board)
 	copy(c[:], b[:])
 	return c

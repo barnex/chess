@@ -20,7 +20,7 @@ func MarkAllMoves(b *Board, typ ...Piece) {
 }
 
 func mark(b *Board, p []Pos) {
-	c := b.Copy()
+	c := b.copy()
 	for _, p := range p {
 		c[p.Index()] = 100
 	}

@@ -1,26 +1,25 @@
 package chess
 
+import "math"
+
 type Value struct {
-	Win, Lose bool
-	InMoves   int
+	Win       Color
 	Heuristic float64
 }
 
 func (a Value) GT(b Value) bool {
-	switch {
-	case a.Win && !b.Win:
+	if a.Win > b.Win {
 		return true
-	case !a.Win && b.Win:
-		return false
-	case a.Lose && !b.Lose:
-		return false
-	case !a.Lose && b.Lose:
-		return true
-	case a.Win && b.Win:
-		return a.InMoves < b.InMoves
-	case a.Lose && b.Lose:
-		return a.InMoves > b.InMoves
-	default:
-		return a.Heuristic > b.Heuristic
 	}
+	return a.Heuristic > b.Heuristic
 }
+
+func (a Value) Neg() Value {
+	return a.Mul(-1)
+}
+
+func (a Value) Mul(c Color) Value {
+	return Value{c * a.Win, float64(c) * a.Heuristic}
+}
+
+var MinusInf = Value{-1, math.Inf(-1)}
