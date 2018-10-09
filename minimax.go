@@ -33,19 +33,6 @@ func (e *minimax) Move(b *Board, c Color) Move {
 	return bestMove
 }
 
-//function minimax(node, depth, maximizingPlayer) is
-// if depth = 0 or node is a terminal node then
-//     return the heuristic value of node
-// if maximizingPlayer then
-//     value := −∞
-//     for each child of node do
-//         value := max(value, minimax(child, depth − 1, FALSE))
-//     return value
-// else (* minimizing player *)
-//     value := +∞
-//     for each child of node do
-//         value := min(value, minimax(child, depth − 1, TRUE))
-//     return value
 func (e *minimax) negamax(b *Board, depth int, c Color, max bool) Value {
 	if depth == 0 {
 		return e.h(b, c)
@@ -62,11 +49,18 @@ func (e *minimax) negamax(b *Board, depth int, c Color, max bool) Value {
 		}
 		return value
 	} else {
-		value := Inf(-1)
+		//value := Inf(-1)
+		//for _, m := range counterMoves {
+		//	b2 := b.WithMove(m)
+		//	v := e.negamax(b2, depth-1, -c, !max).Mul(-1)
+		//	value = Max(value, v)
+		//}
+		//return value
+		value := Inf(1)
 		for _, m := range counterMoves {
 			b2 := b.WithMove(m)
 			v := e.negamax(b2, depth-1, -c, !max).Mul(-1)
-			value = Max(value, v)
+			value = Min(value, v)
 		}
 		return value
 	}
