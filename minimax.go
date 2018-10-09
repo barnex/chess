@@ -53,26 +53,21 @@ func (e *minimax) negamax(b *Board, depth int, c Color, max bool) Value {
 
 	counterMoves := allMoves(b, -c)
 
-	var vs []Value
 	if max {
 		value := MinusInf.Mul(-1)
 		for _, m := range counterMoves {
 			b2 := b.WithMove(m)
-			v := e.heuristicValue(b2).Mul(c)
-			vs = append(vs, v)
+			v := e.negamax(b2, depth-1, -c, !max).Mul(-1)
 			value = Min(value, v)
 		}
-		//fmt.Println(vs)
 		return value
 	} else {
-		value := MinusInf.Mul(-1)
+		value := MinusInf
 		for _, m := range counterMoves {
 			b2 := b.WithMove(m)
-			v := e.heuristicValue(b2).Mul(c)
-			vs = append(vs, v)
+			v := e.negamax(b2, depth-1, -c, !max).Mul(-1)
 			value = Max(value, v)
 		}
-		//fmt.Println(vs)
 		return value
 	}
 }

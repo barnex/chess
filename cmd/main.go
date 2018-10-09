@@ -9,17 +9,28 @@ import (
 
 func main() {
 
-	engineA := chess.Minimax(0, chess.Heuristic1)
-	engineB := chess.Minimax(1, chess.Heuristic1)
+	//engineA := chess.Random()
+	//engineB := chess.Random()
+
+	engineA := chess.Random()
+	engineB := chess.Greedy(chess.Heuristic0)
+
+	//engineB := chess.Minimax(0, chess.Heuristic1)
+
+	//engineA := chess.Minimax(0, chess.Heuristic1)
+	//engineB := chess.Minimax(1, chess.Heuristic1)
+
+	//engineA := chess.Minimax(1, chess.Heuristic1)
+	//engineB := chess.Minimax(2, chess.Heuristic1)
 
 	var (
 		totalMoves int
 		wins       [3]int
 	)
 
-	numGames := 100
+	numRounds := 500
 
-	for i := 0; i < numGames; i++ {
+	for i := 0; i < numRounds; i++ {
 		w1, m1 := chess.Game(engineA, engineB)
 		totalMoves += m1
 		w2, m2 := chess.Game(engineB, engineA)
@@ -34,7 +45,7 @@ func main() {
 		totalGames := wins[0] + wins[1] + wins[2]
 
 		score := winB / (winA + winB)
-		err := 3 * math.Sqrt(winB+1) / (winA + winB)
+		err := 1 * math.Sqrt(winB+1) / (winA + winB)
 		draw := winX / (winA + winB + winX)
 		movesPerGame := float64(totalMoves) / (winA + winB + winX)
 
