@@ -55,7 +55,7 @@ func main() {
 		totalGames := wins[0] + wins[1] + wins[2]
 
 		score := winB / (winA + winB)
-		err := 1 * math.Sqrt(winB+1) / (winA + winB)
+		err := 1 * math.Sqrt(winB+1) / (winA + winB) // TODO: use bernouilli stats
 		draw := winX / (winA + winB + winX)
 		movesPerGame := float64(totalMoves) / (winA + winB + winX)
 

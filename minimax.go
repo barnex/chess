@@ -23,7 +23,7 @@ func (e *minimax) Move(b *Board, c Color) Move {
 	)
 	for _, m := range moves {
 		b2 := b.WithMove(m)
-		s := e.negamax(b2, e.depth, c, true)
+		s := e.negamax(b2, e.depth, c)
 		//fmt.Println("score ", i, s)
 		if s.GT(bestScore) {
 			bestScore = s
@@ -33,37 +33,20 @@ func (e *minimax) Move(b *Board, c Color) Move {
 	return bestMove
 }
 
-func (e *minimax) negamax(b *Board, depth int, c Color, max bool) Value {
+func (e *minimax) negamax(b *Board, depth int, c Color) Value {
 	if depth == 0 {
 		return e.h(b, c)
 	}
 
 	counterMoves := allMoves(b, -c)
 
-	if max {
-		value := Inf(1)
-		for _, m := range counterMoves {
-			b2 := b.WithMove(m)
-			v := e.negamax(b2, depth-1, -c, !max).Mul(-1)
-			value = Min(value, v)
-		}
-		return value
-	} else {
-		//value := Inf(-1)
-		//for _, m := range counterMoves {
-		//	b2 := b.WithMove(m)
-		//	v := e.negamax(b2, depth-1, -c, !max).Mul(-1)
-		//	value = Max(value, v)
-		//}
-		//return value
-		value := Inf(1)
-		for _, m := range counterMoves {
-			b2 := b.WithMove(m)
-			v := e.negamax(b2, depth-1, -c, !max).Mul(-1)
-			value = Min(value, v)
-		}
-		return value
+	value := Inf(1)
+	for _, m := range counterMoves {
+		b2 := b.WithMove(m)
+		v := e.negamax(b2, depth-1, -c).Mul(-1)
+		value = Min(value, v)
 	}
+	return value
 }
 
 //func (e *minimax) heuristicMove(b *Board, m Move, c Color) Value {
