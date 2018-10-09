@@ -46,4 +46,6 @@ func Min(a, b Value) Value {
 	return b
 }
 
-var MinusInf = Value{-1, math.Inf(-1)}
+func Inf(sign Color) Value {
+	return Value{1, math.Inf(1)}.Mul(sign)
+}

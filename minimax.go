@@ -19,7 +19,7 @@ func (e *minimax) Move(b *Board, c Color) Move {
 
 	var (
 		bestMove  = moves[e.rnd.Intn(len(moves))]
-		bestScore = MinusInf
+		bestScore = Inf(-1)
 	)
 	for _, m := range moves {
 		b2 := b.WithMove(m)
@@ -48,13 +48,13 @@ func (e *minimax) Move(b *Board, c Color) Move {
 //     return value
 func (e *minimax) negamax(b *Board, depth int, c Color, max bool) Value {
 	if depth == 0 {
-		return e.heuristicValue(b).Mul(c)
+		return e.h(b, c)
 	}
 
 	counterMoves := allMoves(b, -c)
 
 	if max {
-		value := MinusInf.Mul(-1)
+		value := Inf(1)
 		for _, m := range counterMoves {
 			b2 := b.WithMove(m)
 			v := e.negamax(b2, depth-1, -c, !max).Mul(-1)
@@ -62,7 +62,7 @@ func (e *minimax) negamax(b *Board, depth int, c Color, max bool) Value {
 		}
 		return value
 	} else {
-		value := MinusInf
+		value := Inf(-1)
 		for _, m := range counterMoves {
 			b2 := b.WithMove(m)
 			v := e.negamax(b2, depth-1, -c, !max).Mul(-1)
@@ -70,10 +70,6 @@ func (e *minimax) negamax(b *Board, depth int, c Color, max bool) Value {
 		}
 		return value
 	}
-}
-
-func (e *minimax) heuristicValue(b *Board) Value {
-	return Value{Win: b.Winner(), Heuristic: e.h(b)}
 }
 
 //func (e *minimax) heuristicMove(b *Board, m Move, c Color) Value {

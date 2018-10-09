@@ -18,19 +18,15 @@ func (e *greedy) Move(b *Board, c Color) Move {
 
 	var (
 		bestMove  = moves[e.rnd.Intn(len(moves))]
-		bestScore = MinusInf
+		bestScore = Inf(-1)
 	)
 	for _, m := range moves {
 		b2 := b.WithMove(m)
-		s := e.heuristicValue(b2)
+		s := e.h(b2, c)
 		if s.GT(bestScore) {
 			bestScore = s
 			bestMove = m
 		}
 	}
 	return bestMove
-}
-
-func (e *greedy) heuristicValue(b *Board) Value {
-	return Value{Win: b.Winner(), Heuristic: e.h(b)}
 }
