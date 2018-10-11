@@ -15,23 +15,22 @@ func Heuristic1(b *Board, c Color) Value {
 func Heuristic2(b *Board, c Color) Value {
 	h := 0.0
 	for _, p := range b {
-		h += valueOf[p]
+		h += valueOf[p+6]
 	}
 	return Value{Win: b.Winner(), Heuristic: h + noise()}.Mul(c)
 }
 
-var valueOf = map[Piece]float64{
-	wP: 1,
-	wN: 5,
-	wB: 5,
-	wR: 10,
-	wQ: 15,
-
-	bP: -1,
-	bN: -5,
-	bB: -5,
-	bR: -10,
-	bQ: -15,
+var valueOf = [13]float64{
+	wP + 6: 1,
+	wN + 6: 5,
+	wB + 6: 5,
+	wR + 6: 10,
+	wQ + 6: 15,
+	bP + 6: -1,
+	bN + 6: -5,
+	bB + 6: -5,
+	bR + 6: -10,
+	bQ + 6: -15,
 }
 
 func noise() float64 {
