@@ -21,6 +21,9 @@ func (a Value) GT(b Value) bool {
 	if a.Win > b.Win {
 		return true
 	}
+	if a.Win < b.Win {
+		return false
+	}
 	return a.Heuristic > b.Heuristic
 }
 

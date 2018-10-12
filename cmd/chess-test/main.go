@@ -30,11 +30,11 @@ func main() {
 	//engineA := chess.Minimax(0, chess.Heuristic2)
 	//engineB := chess.Minimax(1, chess.Heuristic2)
 
-	//engineA := chess.Minimax(1, chess.Heuristic2)
-	//engineB := chess.Minimax(2, chess.Heuristic2)
+	engineA := chess.Minimax(1, chess.Heuristic2)
+	engineB := chess.Minimax(2, chess.Heuristic2)
 
-	engineA := chess.Minimax(2, chess.Heuristic2)
-	engineB := chess.Minimax(3, chess.Heuristic2)
+	//engineA := chess.Minimax(2, chess.Heuristic2)
+	//engineB := chess.Minimax(3, chess.Heuristic2)
 
 	var (
 		totalMoves int
