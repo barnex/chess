@@ -2,22 +2,22 @@ package chess
 
 import "math/rand"
 
-type Heuristic func(*Board, Color) Value
+type Heuristic func(*Board, Color) float64
 
-func Heuristic0(_ *Board, _ Color) Value {
-	return Value{Heuristic: noise()}
+func Heuristic0(_ *Board, _ Color) float64 {
+	return noise()
 }
 
-func Heuristic1(b *Board, c Color) Value {
-	return Value{Win: b.Winner(), Heuristic: noise()}.Mul(c)
+func Heuristic1(b *Board, c Color) float64 {
+	return float64(c) * (Inf(c*b.Winner()) + noise())
 }
 
-func Heuristic2(b *Board, c Color) Value {
+func Heuristic2(b *Board, c Color) float64 {
 	h := 0.0
 	for _, p := range b {
 		h += valueOf[p+6]
 	}
-	return Value{Win: b.Winner(), Heuristic: h + noise()}.Mul(c)
+	return float64(c) * (Inf(b.Winner()) + h + noise())
 }
 
 var valueOf = [13]float64{

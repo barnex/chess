@@ -23,7 +23,7 @@ func (e *greedy) Move(b *Board, c Color) Move {
 	for _, m := range moves {
 		b2 := b.WithMove(m)
 		s := e.h(b2, c)
-		if s.GT(bestScore) {
+		if s > bestScore {
 			bestScore = s
 			bestMove = m
 		}

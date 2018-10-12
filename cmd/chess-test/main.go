@@ -30,7 +30,8 @@ func main() {
 	//engineA := chess.Minimax(0, chess.Heuristic2)
 	//engineB := chess.Minimax(1, chess.Heuristic2)
 
-	engineA := chess.Minimax(1, chess.Heuristic2)
+	engineA := chess.Random()
+	//engineA := chess.Minimax(1, chess.Heuristic2)
 	engineB := chess.Minimax(2, chess.Heuristic2)
 
 	//engineA := chess.Minimax(2, chess.Heuristic2)
