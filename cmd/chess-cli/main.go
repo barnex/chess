@@ -44,38 +44,54 @@ func main() {
 }
 
 const (
-	halfL   = "\u258C"
-	halfR   = "\u2590"
-	esc     = "\033["
-	fgWhite = esc + "48;5;255;m"
-	fgBlack = esc + "48;5;232;m"
+	halfL = "\u258C"
+	halfR = "\u2590"
 
-	bgLight = esc + "48;5;250;m"
-	bgDark  = esc + "48;5;245;m"
+	bgLight = "\033[48;5;256m"
+	bgDark  = "\033[48;5;251m"
+	fgLight = "\033[38;5;256m"
+	fgDark  = "\033[38;5;251m"
+	fgBlack = "\033[38;5;232m"
 
-	fgLight = esc + "38;5;250;m"
-	fgDark  = esc + "38;5;245;m"
+	reset = "\033[0m"
 )
 
 func Render(b *Board) {
-	fmt.Println(b.String(), "\n")
-	//for r := 7; r >= 0; r-- {
-	//	fmt.Println(r + 1)
-	//	for c := 0; c < 8; c++ {
+	for r := 7; r >= 0; r-- {
 
-	//		if (r+c)%2 == 0 {
-	//			fmt.Print(fgLight, bgDark, halfR, b.At(RC(r, c)))
-	//		} else {
-	//			fmt.Print(fgDark, bgLight, halfR, b.At(RC(r, c)))
-	//		}
-	//		//fmt.Println(" ", b.At(RC(r, c)))
-	//		fmt.Print(halfL, halfR)
+		fmt.Print(fgDark, r+1, reset)
 
-	//	}
-	//	fmt.Println()
-	//}
-	//fmt.Println("  a b c d e f g h")
-	//fmt.Println()
+		for c := 0; c < 8; c++ {
+
+			if c == 0 {
+				if (c+r)%2 == 1 {
+					fmt.Print(reset, bgLight, fgDark, halfR, bgDark, fgBlack)
+				} else {
+					fmt.Print(" ")
+				}
+			} else {
+				if (c+r)%2 == 1 {
+					fmt.Print(reset, bgLight, fgDark, halfR, bgDark, fgBlack)
+				} else {
+					fmt.Print(reset, bgLight, fgDark, halfL, bgLight, fgBlack)
+				}
+			}
+
+			piece := b.At(RC(r, c)).String()
+			if b.At(RC(r, c)) == 0 {
+				piece = " "
+			}
+			fmt.Print(piece)
+
+		}
+		if (r)%2 == 1 {
+			fmt.Print(" ")
+		} else {
+			fmt.Print(reset, bgLight, fgDark, halfL, bgLight, fgBlack)
+		}
+		fmt.Println()
+	}
+	fmt.Print(fgDark, "  a b c d e f g h", reset, "\n")
 }
 
 func Allowed(b *Board, c Color, m Move) bool {
