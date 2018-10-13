@@ -34,8 +34,17 @@ func (e *worf) Move(b *Board, c Color) (Move, float64) {
 
 func (e *worf) negamax(b *Board, depth int, c Color, m Move) float64 {
 
-	if w := b.WithMove(m).Winner(); w != 0 {
-		return Inf(w * c)
+	//if w := b.WithMove(m).Winner(); w != 0 {
+	//	return Inf(w * c)
+	//}
+
+	b.AssertValid()
+
+	if b.At(m.Dst) == WK {
+		return Inf(-c * White)
+	}
+	if b.At(m.Dst) == BK {
+		return Inf(-c * Black)
 	}
 
 	if depth == 0 {

@@ -39,6 +39,15 @@ func (e *minimax) Move(b *Board, c Color) (Move, float64) {
 }
 
 func (e *minimax) negamax(b *Board, depth int, c Color) float64 {
+
+	b.AssertValid()
+
+	// We must abort as soon as there is a winner,
+	// else we continue playing with 1 or 0 kings.
+	if w := b.Winner(); w != 0 {
+		return Inf(w * c)
+	}
+
 	if depth == 0 {
 		return e.h(b, c)
 		e.numEval++

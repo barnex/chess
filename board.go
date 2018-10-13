@@ -72,6 +72,21 @@ func (b *Board) Winner() Color {
 	return winner
 }
 
+func (b *Board) AssertValid() {
+	var numWK, numBK int
+	for _, p := range b {
+		if p == WK {
+			numWK++
+		}
+		if p == BK {
+			numBK++
+		}
+	}
+	if numWK > 1 || numBK > 1 || numWK+numBK < 1 {
+		panic("invalid board\n" + b.String())
+	}
+}
+
 func (b *Board) String() string {
 	var buf bytes.Buffer
 	for r := 7; r >= 0; r-- {
