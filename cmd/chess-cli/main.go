@@ -14,7 +14,7 @@ func main() {
 
 	b := NewBoard()
 
-	engine := Minimax(3, Heuristic2)
+	engine := Minimax(4, Heuristic2)
 
 	Render(b)
 	for {

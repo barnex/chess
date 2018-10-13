@@ -60,23 +60,16 @@ func (b *Board) copy() *Board {
 }
 
 func (b *Board) Winner() Color {
-	var haveWK, haveBK bool
+	winner := Nobody
 	for _, p := range b {
 		if p == wK {
-			haveWK = true
+			winner += White
 		}
 		if p == bK {
-			haveBK = true
+			winner += Black
 		}
 	}
-	switch {
-	case !haveWK:
-		return Black
-	case !haveBK:
-		return White
-	default:
-		return 0
-	}
+	return winner
 }
 
 func (b *Board) String() string {

@@ -1,7 +1,9 @@
 package chess
 
 import (
+	"fmt"
 	"math/rand"
+	"time"
 )
 
 func Minimax(depth int, h Heuristic) Engine {
@@ -14,6 +16,8 @@ type minimax struct {
 	h     Heuristic
 }
 
+var numEval int
+
 func (e *minimax) Move(b *Board, c Color) Move {
 	moves := allMoves(b, c)
 
@@ -21,6 +25,8 @@ func (e *minimax) Move(b *Board, c Color) Move {
 		bestMove  = moves[e.rnd.Intn(len(moves))]
 		bestScore = Inf(-1)
 	)
+	numEval = 0
+	start := time.Now()
 	for _, m := range moves {
 		b2 := b.WithMove(m)
 		s := e.negamax(b2, e.depth, c)
@@ -29,11 +35,14 @@ func (e *minimax) Move(b *Board, c Color) Move {
 			bestMove = m
 		}
 	}
+	d := time.Since(start)
+	fmt.Println(numEval, "boards evaluated in", d, float64(numEval)/d.Seconds(), "/s")
 	return bestMove
 }
 
 func (e *minimax) negamax(b *Board, depth int, c Color) float64 {
 	if depth == 0 {
+		numEval++
 		return e.h(b, c)
 	}
 
