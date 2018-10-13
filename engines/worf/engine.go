@@ -8,7 +8,7 @@ import (
 )
 
 func New(depth int) Engine {
-	return &worf{newRand(), depth}
+	return &worf{rand.New(rand.NewSource(123)), depth}
 }
 
 type worf struct {
@@ -68,6 +68,7 @@ func (e *worf) negamax(n *Node, depth int, c Color, m Move) int {
 
 func Heuristic3(n *Node, m Move) int {
 
+	NumEvals++
 	delta := -valueOf[n.board.At(m.Dst)+6]
 	fast := (n.value + delta)
 

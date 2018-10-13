@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	flagD = flag.Int("d", 3, "depth")
+	flagD = flag.Int("d", 4, "depth")
 	flagE = flag.String("e", "worf", "opponent: tarr|riker|worf")
 )
 
