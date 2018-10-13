@@ -30,6 +30,7 @@ var valueOf = [13]float64{
 	WB + 6: 5,
 	WR + 6: 10,
 	WQ + 6: 20,
+
 	BP + 6: -1,
 	BN + 6: -6,
 	BB + 6: -5,

@@ -1,3 +1,4 @@
+//Command chess-test plays two engines against each other.
 package main
 
 import (
@@ -11,33 +12,11 @@ import (
 
 func main() {
 
-	//engineA := chess.Random()
-	//engineB := chess.Random()
-
-	//engineA := chess.Random()
-	//engineB := chess.Greedy(chess.Heuristic0)
-
-	//engineA := chess.Greedy(chess.Heuristic0)
-	//engineB := chess.Greedy(chess.Heuristic1)
-
-	//engineA := chess.Greedy(chess.Heuristic1)
-	//engineB := chess.Greedy(chess.Heuristic2)
-
-	//engineA := chess.Greedy(chess.Heuristic2)
-	//engineB := chess.Greedy(chess.Heuristic2)
-
-	//engineA := chess.Greedy(chess.Heuristic2)
-	//engineB := chess.Minimax(0, chess.Heuristic2)
-
-	//engineA := chess.Minimax(0, chess.Heuristic2)
-	//engineB := chess.Minimax(1, chess.Heuristic2)
-
 	//engineA := random.New()
+	//engineB := tarr.New(tarr.Heuristic2)
+
 	engineA := tarr.New(tarr.Heuristic2)
 	engineB := riker.New(2)
-
-	//engineA := chess.Minimax(2, chess.Heuristic2)
-	//engineB := chess.Minimax(3, chess.Heuristic2)
 
 	var (
 		totalMoves int
@@ -47,9 +26,9 @@ func main() {
 	numRounds := 5000
 
 	for i := 0; i < numRounds; i++ {
-		w1, m1 := chess.Game(engineA, engineB)
+		w1, m1 := Game(engineA, engineB)
 		totalMoves += m1
-		w2, m2 := chess.Game(engineB, engineA)
+		w2, m2 := Game(engineB, engineA)
 		totalMoves += m2
 
 		wins[w1+1]++
@@ -69,4 +48,25 @@ func main() {
 			100*score, 100*err, totalGames, 100*draw, movesPerGame)
 
 	}
+}
+
+func Game(we, be chess.Engine) (winner chess.Color, moves int) {
+
+	b := chess.NewBoard()
+
+	max := 200
+	currPlayer := chess.White
+	players := map[chess.Color]chess.Engine{chess.White: we, chess.Black: be}
+	for i := 0; i < max; i++ {
+		if w := b.Winner(); w != 0 {
+			return w, i
+		}
+
+		m, _ := players[currPlayer].Move(b, currPlayer)
+		b = b.WithMove(m)
+		//	fmt.Println(currPlayer, m, "\n", b)
+
+		currPlayer = -currPlayer
+	}
+	return 0, max
 }
