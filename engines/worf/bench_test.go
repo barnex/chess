@@ -1,4 +1,4 @@
-package riker
+package worf
 
 import (
 	"testing"
@@ -6,7 +6,7 @@ import (
 	. "github.com/barnex/chess"
 )
 
-func BenchmarkMinimax2(b *testing.B) {
+func BenchmarkDepth2(b *testing.B) {
 	e := New(2)
 	for i := 0; i < b.N; i++ {
 		b := NewBoard()
@@ -14,7 +14,7 @@ func BenchmarkMinimax2(b *testing.B) {
 	}
 }
 
-func BenchmarkMinimax3(b *testing.B) {
+func BenchmarkDepth3(b *testing.B) {
 	e := New(3)
 	for i := 0; i < b.N; i++ {
 		b := NewBoard()
