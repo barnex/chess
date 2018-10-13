@@ -3,11 +3,12 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"math"
 
 	"github.com/barnex/chess"
+	"github.com/barnex/chess/engines/cheat"
 	"github.com/barnex/chess/engines/riker"
-	"github.com/barnex/chess/engines/tarr"
 )
 
 func main() {
@@ -15,7 +16,8 @@ func main() {
 	//engineA := random.New()
 	//engineB := tarr.New(tarr.Heuristic2)
 
-	engineA := tarr.New(tarr.Heuristic2)
+	engineA := cheat.New()
+	//engineA := tarr.New(tarr.Heuristic2)
 	engineB := riker.New(2)
 
 	var (
@@ -63,6 +65,11 @@ func Game(we, be chess.Engine) (winner chess.Color, moves int) {
 		}
 
 		m, _ := players[currPlayer].Move(b, currPlayer)
+
+		if !chess.Allowed(b, currPlayer, m) {
+			log.Fatal("BUG: illegal move", currPlayer, m, "\n", b)
+		}
+
 		b = b.WithMove(m)
 		//	fmt.Println(currPlayer, m, "\n", b)
 

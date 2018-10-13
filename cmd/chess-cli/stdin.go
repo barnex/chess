@@ -62,17 +62,6 @@ func (e *stdin) ReadLine() string {
 	return e.scanner.Text()
 }
 
-func Allowed(b *Board, c Color, m Move) bool {
-	var all []Pos
-	Moves(b, m.Src, &all)
-	for _, a := range all {
-		if m.Dst == a {
-			return true
-		}
-	}
-	return false
-}
-
 func ParsePos(txt string) (Pos, error) {
 	if len(txt) != 2 {
 		return Pos{}, fmt.Errorf("syntax error")

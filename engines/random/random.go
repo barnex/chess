@@ -7,7 +7,8 @@ import (
 	. "github.com/barnex/chess"
 )
 
-// New returns an engine that makes random moves.
+// New returns an engine that makes random legal moves.
+// Used for testing.
 func New() Engine {
 	return &random{newRand()}
 }

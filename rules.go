@@ -37,6 +37,20 @@ func Moves(b *Board, src Pos, dst *[]Pos) {
 	}
 }
 
+func Allowed(b *Board, c Color, m Move) bool {
+	if b.At(m.Src).Color() != c {
+		return false
+	}
+	var all []Pos
+	Moves(b, m.Src, &all)
+	for _, a := range all {
+		if m.Dst == a {
+			return true
+		}
+	}
+	return false
+}
+
 func QMoves(b *Board, src Pos, dst *[]Pos) {
 	RMoves(b, src, dst)
 	BMoves(b, src, dst)
