@@ -28,13 +28,13 @@ func Render(b *Board) {
 
 			switch c {
 			case 0:
-				if (c+r)%2 == 1 {
+				if (c+r)%2 == 0 {
 					fmt.Print(reset, fgDark, halfR, bgDark, fgBlack)
 				} else {
 					fmt.Print(reset, fgLight, halfR, bgLight, fgBlack)
 				}
 			default:
-				if (c+r)%2 == 1 {
+				if (c+r)%2 == 0 {
 					fmt.Print(reset, bgLight, fgDark, halfR, bgDark, fgBlack)
 				} else {
 					fmt.Print(reset, bgLight, fgDark, halfL, bgLight, fgBlack)
@@ -47,7 +47,7 @@ func Render(b *Board) {
 			fmt.Print(piece)
 
 		}
-		if (r)%2 == 0 {
+		if (r)%2 == 1 {
 			fmt.Print(reset, fgDark, halfL, reset)
 		} else {
 			fmt.Print(reset, fgLight, halfL, reset)
