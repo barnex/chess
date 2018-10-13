@@ -1,5 +1,5 @@
 package chess
 
 type Engine interface {
-	Move(*Board, Color) Move
+	Move(*Board, Color) (Move, float64)
 }

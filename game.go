@@ -12,7 +12,7 @@ func Game(we, be Engine) (winner Color, moves int) {
 			return w, i
 		}
 
-		m := players[currPlayer].Move(b, currPlayer)
+		m, _ := players[currPlayer].Move(b, currPlayer)
 		b = b.WithMove(m)
 		//	fmt.Println(currPlayer, m, "\n", b)
 

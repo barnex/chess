@@ -13,7 +13,7 @@ type greedy struct {
 	h   Heuristic
 }
 
-func (e *greedy) Move(b *Board, c Color) Move {
+func (e *greedy) Move(b *Board, c Color) (Move, float64) {
 	moves := allMoves(b, c)
 
 	var (
@@ -28,5 +28,5 @@ func (e *greedy) Move(b *Board, c Color) Move {
 			bestMove = m
 		}
 	}
-	return bestMove
+	return bestMove, bestScore
 }

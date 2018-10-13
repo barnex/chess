@@ -14,9 +14,9 @@ type random struct {
 	rnd *rand.Rand
 }
 
-func (e *random) Move(b *Board, c Color) Move {
+func (e *random) Move(b *Board, c Color) (Move, float64) {
 	moves := allMoves(b, c)
-	return moves[e.rnd.Intn(len(moves))]
+	return moves[e.rnd.Intn(len(moves))], 0
 }
 
 func allMoves(b *Board, c Color) []Move {
