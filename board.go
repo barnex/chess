@@ -25,7 +25,7 @@ func Upright(b *Board) *Board {
 	for r := 0; r < 8; r++ {
 		r2 := 7 - r
 		for c := 0; c < 8; c++ {
-			b2[RC(r2, c).Index()] = b[RC(r, c).Index()]
+			b2[RC(r2, c).index()] = b.At(RC(r, c))
 		}
 	}
 	return b2
@@ -43,13 +43,13 @@ func (b *Board) Slice() [][]Piece {
 }
 
 func (b *Board) At(p Pos) Piece {
-	return b[p.Index()]
+	return b[int(p[0]<<3|p[1])]
 }
 
 func (b *Board) WithMove(m Move) *Board {
 	c := b.copy()
-	c[m.Dst.Index()] = b[m.Src.Index()]
-	c[m.Src.Index()] = 00
+	c[m.Dst.index()] = b.At(m.Src)
+	c[m.Src.index()] = 00
 	return c
 }
 

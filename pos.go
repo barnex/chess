@@ -49,7 +49,7 @@ func (p Pos) String() string {
 	return "abcdefgh"[p.Col():p.Col()+1] + "12345678"[p.Row():p.Row()+1]
 }
 
-func (p Pos) Index() int {
+func (p Pos) index() int {
 	if !p.Valid() {
 		panic(fmt.Errorf("pos out of bounds: %v", p))
 	}
