@@ -1,9 +1,13 @@
-package chess
+package riker
 
-import "testing"
+import (
+	"testing"
+
+	. "github.com/barnex/chess"
+)
 
 func BenchmarkMinimax2(b *testing.B) {
-	e := Minimax(2, Heuristic2)
+	e := New(2)
 	for i := 0; i < b.N; i++ {
 		b := NewBoard()
 		e.Move(b, White)
@@ -11,7 +15,7 @@ func BenchmarkMinimax2(b *testing.B) {
 }
 
 func BenchmarkMinimax3(b *testing.B) {
-	e := Minimax(3, Heuristic2)
+	e := New(3)
 	for i := 0; i < b.N; i++ {
 		b := NewBoard()
 		e.Move(b, White)

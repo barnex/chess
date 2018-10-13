@@ -2,17 +2,17 @@ package chess
 
 func ExampleRulesBP() {
 	b := Upright(&Board{
-		bR, bN, bB, bQ, bK, bB, bN, bR,
-		bP, bP, bP, 00, bP, bP, bP, bP,
-		00, wP, 00, 00, 00, 00, bB, 00,
+		BR, BN, BB, BQ, BK, BB, BN, BR,
+		BP, BP, BP, 00, BP, BP, BP, BP,
+		00, WP, 00, 00, 00, 00, BB, 00,
 		00, 00, 00, 00, 00, 00, 00, 00,
-		00, 00, 00, wP, 00, 00, 00, 00,
-		00, 00, 00, bP, 00, 00, 00, 00,
-		wP, 00, wP, wP, wP, wP, wP, wP,
-		wR, wN, wB, wQ, wK, wB, wN, wR,
+		00, 00, 00, WP, 00, 00, 00, 00,
+		00, 00, 00, BP, 00, 00, 00, 00,
+		WP, 00, WP, WP, WP, WP, WP, WP,
+		WR, WN, WB, WQ, WK, WB, WN, WR,
 	})
 
-	MarkAllMoves(b, bP)
+	MarkAllMoves(b, BP)
 
 	//Output:
 	// moves for ♟d3
@@ -107,17 +107,17 @@ func ExampleRulesBP() {
 
 func ExampleRulesWP() {
 	b := Upright(&Board{
-		bR, bN, bB, bQ, bK, bB, bN, bR,
-		bP, bP, bP, 00, bP, bP, bP, bP,
-		00, wP, 00, 00, 00, 00, bB, 00,
+		BR, BN, BB, BQ, BK, BB, BN, BR,
+		BP, BP, BP, 00, BP, BP, BP, BP,
+		00, WP, 00, 00, 00, 00, BB, 00,
 		00, 00, 00, 00, 00, 00, 00, 00,
-		00, 00, 00, wP, 00, 00, 00, 00,
-		00, 00, 00, bP, 00, 00, 00, 00,
-		wP, 00, wP, wP, wP, wP, wP, wP,
-		wR, wN, wB, wQ, wK, wB, wN, wR,
+		00, 00, 00, WP, 00, 00, 00, 00,
+		00, 00, 00, BP, 00, 00, 00, 00,
+		WP, 00, WP, WP, WP, WP, WP, WP,
+		WR, WN, WB, WQ, WK, WB, WN, WR,
 	})
 
-	MarkAllMoves(b, wP)
+	MarkAllMoves(b, WP)
 
 	//Output:
 	// moves for ♙a2

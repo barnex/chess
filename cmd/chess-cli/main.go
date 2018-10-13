@@ -2,19 +2,27 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"os"
 	"strings"
 
 	. "github.com/barnex/chess"
+	"github.com/barnex/chess/engines/riker"
+)
+
+var (
+	flagD = flag.Int("d", 3, "depth")
 )
 
 func main() {
+	flag.Parse()
+
 	fmt.Println()
 
 	b := NewBoard()
 
-	engine := Minimax(4, Heuristic2)
+	engine := riker.New(*flagD)
 
 	Render(b)
 	for {
@@ -32,7 +40,7 @@ func main() {
 			break
 		}
 
-		m2 := engine.Move(b, Black)
+		m2, _ := engine.Move(b, Black)
 		src = b.At(m2.Src)
 		b = b.WithMove(m2)
 		fmt.Println("computer:", src, m2)

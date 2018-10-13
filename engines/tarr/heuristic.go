@@ -1,6 +1,9 @@
-package chess
+package tarr
 
-import "math/rand"
+import (
+	. "github.com/barnex/chess"
+	"math/rand"
+)
 
 type Heuristic func(*Board, Color) float64
 
@@ -21,16 +24,16 @@ func Heuristic2(b *Board, c Color) float64 {
 }
 
 var valueOf = [13]float64{
-	wP + 6: 1,
-	wN + 6: 5,
-	wB + 6: 5,
-	wR + 6: 10,
-	wQ + 6: 15,
-	bP + 6: -1,
-	bN + 6: -5,
-	bB + 6: -5,
-	bR + 6: -10,
-	bQ + 6: -15,
+	WP + 6: 1,
+	WN + 6: 5,
+	WB + 6: 5,
+	WR + 6: 10,
+	WQ + 6: 15,
+	BP + 6: -1,
+	BN + 6: -5,
+	BB + 6: -5,
+	BR + 6: -10,
+	BQ + 6: -15,
 }
 
 func noise() float64 {

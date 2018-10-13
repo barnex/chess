@@ -9,14 +9,14 @@ type Board [64]Piece
 
 func NewBoard() *Board {
 	return Upright(&Board{
-		bR, bN, bB, bQ, bK, bB, bN, bR,
-		bP, bP, bP, bP, bP, bP, bP, bP,
+		BR, BN, BB, BQ, BK, BB, BN, BR,
+		BP, BP, BP, BP, BP, BP, BP, BP,
 		00, 00, 00, 00, 00, 00, 00, 00,
 		00, 00, 00, 00, 00, 00, 00, 00,
 		00, 00, 00, 00, 00, 00, 00, 00,
 		00, 00, 00, 00, 00, 00, 00, 00,
-		wP, wP, wP, wP, wP, wP, wP, wP,
-		wR, wN, wB, wQ, wK, wB, wN, wR,
+		WP, WP, WP, WP, WP, WP, WP, WP,
+		WR, WN, WB, WQ, WK, WB, WN, WR,
 	})
 }
 
@@ -62,10 +62,10 @@ func (b *Board) copy() *Board {
 func (b *Board) Winner() Color {
 	winner := Nobody
 	for _, p := range b {
-		if p == wK {
+		if p == WK {
 			winner += White
 		}
-		if p == bK {
+		if p == BK {
 			winner += Black
 		}
 	}

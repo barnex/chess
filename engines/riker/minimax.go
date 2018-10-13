@@ -1,11 +1,16 @@
-package chess
+package riker
 
 import (
 	"math/rand"
+	"time"
+
+	. "github.com/barnex/chess"
 )
 
-func Minimax(depth int, h Heuristic) Engine {
-	return &minimax{newRand(), depth, h, 0}
+// New returns an engine with given minimax depth
+// and a value Heuristic2
+func New(depth int) Engine {
+	return &minimax{newRand(), depth, Heuristic2, 0}
 }
 
 type minimax struct {
@@ -16,7 +21,7 @@ type minimax struct {
 }
 
 func (e *minimax) Move(b *Board, c Color) (Move, float64) {
-	moves := allMoves(b, c)
+	moves := AllMoves(b, c)
 
 	var (
 		bestMove  = moves[e.rnd.Intn(len(moves))]
@@ -39,7 +44,7 @@ func (e *minimax) negamax(b *Board, depth int, c Color) float64 {
 		e.numEval++
 	}
 
-	counterMoves := allMoves(b, -c)
+	counterMoves := AllMoves(b, -c)
 
 	value := Inf(1)
 	for _, m := range counterMoves {
@@ -55,4 +60,8 @@ func min(a, b float64) float64 {
 		return a
 	}
 	return b
+}
+
+func newRand() *rand.Rand {
+	return rand.New(rand.NewSource(time.Now().UnixNano()))
 }

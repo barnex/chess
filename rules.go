@@ -1,22 +1,38 @@
 package chess
 
+func AllMoves(b *Board, c Color) []Move {
+	var moves []Move
+	pos := make([]Pos, 0, 64)
+	for p := (Pos{}); p.Valid(); p = p.Next() {
+		if b.At(p).Color() == c {
+			pos = pos[:0]
+			Moves(b, p, &pos)
+			for _, dst := range pos {
+				moves = append(moves, Move{p, dst})
+			}
+
+		}
+	}
+	return moves
+}
+
 func Moves(b *Board, src Pos, dst *[]Pos) {
 	switch b.At(src) {
 	case 00:
 		return
-	case wP:
+	case WP:
 		WPMoves(b, src, dst)
-	case bP:
+	case BP:
 		BPMoves(b, src, dst)
-	case wN, bN:
+	case WN, BN:
 		NMoves(b, src, dst)
-	case wR, bR:
+	case WR, BR:
 		RMoves(b, src, dst)
-	case wB, bB:
+	case WB, BB:
 		BMoves(b, src, dst)
-	case wQ, bQ:
+	case WQ, BQ:
 		QMoves(b, src, dst)
-	case wK, bK:
+	case WK, BK:
 		KMoves(b, src, dst)
 	}
 }

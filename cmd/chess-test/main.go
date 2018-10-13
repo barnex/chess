@@ -5,6 +5,8 @@ import (
 	"math"
 
 	"github.com/barnex/chess"
+	"github.com/barnex/chess/engines/riker"
+	"github.com/barnex/chess/engines/tarr"
 )
 
 func main() {
@@ -30,9 +32,9 @@ func main() {
 	//engineA := chess.Minimax(0, chess.Heuristic2)
 	//engineB := chess.Minimax(1, chess.Heuristic2)
 
-	engineA := chess.Random()
-	//engineA := chess.Minimax(1, chess.Heuristic2)
-	engineB := chess.Minimax(2, chess.Heuristic2)
+	//engineA := random.New()
+	engineA := tarr.New(tarr.Heuristic2)
+	engineB := riker.New(2)
 
 	//engineA := chess.Minimax(2, chess.Heuristic2)
 	//engineB := chess.Minimax(3, chess.Heuristic2)
