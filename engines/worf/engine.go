@@ -43,28 +43,24 @@ func (e *worf) negamax(b *Board, depth int, c Color, m Move) float64 {
 	}
 
 	value := Inf(1)
-	for _, m := range AllMoves(b.WithMove(m), -c) {
-		v := e.negamax(b, depth-1, -c, m) * -1
+
+	b2 := b.WithMove(m)
+	b = nil
+	for _, m := range AllMoves(b2, -c) {
+		v := e.negamax(b2, depth-1, -c, m) * -1
 		value = min(value, v)
 	}
 	return value
-}
-
-func min(a, b float64) float64 {
-	if a < b {
-		return a
-	}
-	return b
-}
-
-func newRand() *rand.Rand {
-	return rand.New(rand.NewSource(time.Now().UnixNano()))
 }
 
 type Heuristic func(*Board, Color, Move) float64
 
 func (e *worf) Heuristic2(b *Board, c Color, m Move) float64 {
 	NumEvals++
+
+	if w := b.WithMove(m).Winner(); w != 0 {
+		return Inf(w * c)
+	}
 
 	b = b.WithMove(m)
 	h := 0.0
@@ -90,4 +86,15 @@ var valueOf = [13]float64{
 
 func (e *worf) noise() float64 {
 	return e.rnd.Float64() / 1024
+}
+
+func min(a, b float64) float64 {
+	if a < b {
+		return a
+	}
+	return b
+}
+
+func newRand() *rand.Rand {
+	return rand.New(rand.NewSource(time.Now().UnixNano()))
 }

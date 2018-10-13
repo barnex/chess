@@ -29,7 +29,6 @@ func (e *minimax) Move(b *Board, c Color) (Move, float64) {
 	)
 	for _, m := range moves {
 		b2 := b.WithMove(m)
-
 		s := e.negamax(b2, e.depth, c)
 		if s > bestScore {
 			bestScore = s
@@ -40,11 +39,6 @@ func (e *minimax) Move(b *Board, c Color) (Move, float64) {
 }
 
 func (e *minimax) negamax(b *Board, depth int, c Color) float64 {
-
-	if w := b.Winner(); w != 0 {
-		return Inf(w * c)
-	}
-
 	if depth == 0 {
 		return e.h(b, c)
 		e.numEval++
