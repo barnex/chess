@@ -23,7 +23,7 @@ func (e *worf) Move(b *Board, c Color) (Move, float64) {
 		bestScore = Inf(-1)
 	)
 	for _, m := range AllMoves(b, c) {
-		s := e.negamax(b, e.depth, c, m)
+		s := float64(e.negamax(b, e.depth, c, m)) + e.noise()
 		if s > bestScore {
 			bestScore = s
 			bestMove = m
@@ -32,23 +32,17 @@ func (e *worf) Move(b *Board, c Color) (Move, float64) {
 	return bestMove, bestScore
 }
 
-func (e *worf) negamax(b *Board, depth int, c Color, m Move) float64 {
-
-	//if w := b.WithMove(m).Winner(); w != 0 {
-	//	return Inf(w * c)
-	//}
-
-	//b.AssertValid()
+func (e *worf) negamax(b *Board, depth int, c Color, m Move) int {
 
 	if dst := b.At(m.Dst); dst == WK || dst == BK {
-		return Inf(-c * dst.Color())
+		return inf(-c * dst.Color())
 	}
 
 	if depth == 0 {
 		return e.Heuristic2(b, c, m)
 	}
 
-	value := Inf(1)
+	value := inf(1)
 
 	b2 := b.WithMove(m)
 	b = nil
@@ -59,20 +53,18 @@ func (e *worf) negamax(b *Board, depth int, c Color, m Move) float64 {
 	return value
 }
 
-type Heuristic func(*Board, Color, Move) float64
-
-func (e *worf) Heuristic2(b *Board, c Color, m Move) float64 {
+func (e *worf) Heuristic2(b *Board, c Color, m Move) int {
 	NumEvals++
 
 	b = b.WithMove(m)
-	h := 0.0
+	h := 0
 	for _, p := range b {
 		h += valueOf[p+6]
 	}
-	return float64(c) * (h + e.noise())
+	return int(c) * h
 }
 
-var valueOf = [13]float64{
+var valueOf = [13]int{
 	WP + 6: 1,
 	WN + 6: 6,
 	WB + 6: 5,
@@ -86,11 +78,7 @@ var valueOf = [13]float64{
 	BQ + 6: -20,
 }
 
-func (e *worf) noise() float64 {
-	return e.rnd.Float64() / 1024
-}
-
-func min(a, b float64) float64 {
+func min(a, b int) int {
 	if a < b {
 		return a
 	}
@@ -99,4 +87,12 @@ func min(a, b float64) float64 {
 
 func newRand() *rand.Rand {
 	return rand.New(rand.NewSource(time.Now().UnixNano()))
+}
+
+func (e *worf) noise() float64 {
+	return e.rnd.Float64() / 1024
+}
+
+func inf(c Color) int {
+	return int(c) * 99999
 }
