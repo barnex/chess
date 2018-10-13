@@ -1,64 +1,51 @@
 package worf
 
-/*
-
 import (
+	"math/rand"
+	"time"
+
 	. "github.com/barnex/chess"
+	"github.com/barnex/chess/engines/riker"
 )
 
-// New returns an engine with given depth.
 func New(depth int) Engine {
-	return &minimax{depth}
+	return &minimax{newRand(), depth, Heuristic2, 0}
 }
 
 type minimax struct {
-	depth int
-}
-
-type Node struct {
-	board Board
-	value float64
+	rnd     *rand.Rand
+	depth   int
+	h       Heuristic
+	numEval int
 }
 
 func (e *minimax) Move(b *Board, c Color) (Move, float64) {
-
-	moves := AllMoves(b, c)
 
 	var (
 		bestMove  = Move{}
 		bestScore = Inf(-1)
 	)
-
-	root := Node{
-		board: *b,
-		value: e.initialValue(b, c),
-	}
-
-	for _, m := range moves {
-
-		b2 := b.WithMove(m)
-		s := e.negamax(b2, e.depth, c)
+	for _, m := range AllMoves(b, c) {
+		s := e.negamax(b, e.depth, c, m)
 		if s > bestScore {
 			bestScore = s
 			bestMove = m
 		}
 	}
-
 	return bestMove, bestScore
 }
 
-func (e *minimax) negamax(n *Node, depth int, c Color) float64 {
+func (e *minimax) negamax(b *Board, depth int, c Color, m Move) float64 {
 	if depth == 0 {
-		return e.h(b, c)
+		//return e.h(b, c, m)
+		return riker.Heuristic2(b.WithMove(m), c)
 		e.numEval++
 	}
 
-	counterMoves := AllMoves(b, -c)
-
 	value := Inf(1)
-	for _, m := range counterMoves {
-		b2 := b.WithMove(m)
-		v := e.negamax(b2, depth-1, -c) * -1
+	b = b.WithMove(m)
+	for _, m := range AllMoves(b, -c) {
+		v := e.negamax(b, depth-1, -c, m) * -1
 		value = min(value, v)
 	}
 	return value
@@ -71,7 +58,49 @@ func min(a, b float64) float64 {
 	return b
 }
 
-func (e *minimax) initialValue(b *Board, c Color) float64 {
-
+func newRand() *rand.Rand {
+	return rand.New(rand.NewSource(time.Now().UnixNano()))
 }
-*/
+
+type Heuristic func(*Board, Color, Move) float64
+
+func Heuristic2(b *Board, c Color, m Move) float64 {
+	NumEvals++
+
+	return riker.Heuristic2(b.WithMove(m), c)
+
+	//dst := b.At(m.Dst)
+	//if dst == BK || dst == WK {
+	//	return Inf(-dst.Color() * c)
+	//}
+
+	//b = b.WithMove(m)
+
+	//h := 0.0
+	//for _, p := range b {
+	//	h += ValueOf(p)
+	//}
+	//return float64(c) * (h + noise())
+}
+
+func ValueOf(p Piece) float64 {
+	return valueOf[p+6]
+}
+
+var valueOf = [13]float64{
+	WP + 6: 1,
+	WN + 6: 6,
+	WB + 6: 5,
+	WR + 6: 10,
+	WQ + 6: 20,
+
+	BP + 6: -1,
+	BN + 6: -6,
+	BB + 6: -5,
+	BR + 6: -10,
+	BQ + 6: -20,
+}
+
+func noise() float64 {
+	return rand.Float64() / 1024
+}

@@ -7,8 +7,8 @@ import (
 	"math"
 
 	"github.com/barnex/chess"
-	"github.com/barnex/chess/engines/cheat"
 	"github.com/barnex/chess/engines/riker"
+	"github.com/barnex/chess/engines/worf"
 )
 
 func main() {
@@ -16,9 +16,8 @@ func main() {
 	//engineA := random.New()
 	//engineB := tarr.New(tarr.Heuristic2)
 
-	engineA := cheat.New()
-	//engineA := tarr.New(tarr.Heuristic2)
-	engineB := riker.New(2)
+	engineA := riker.New(2)
+	engineB := worf.New(2)
 
 	var (
 		totalMoves int
@@ -65,9 +64,12 @@ func Game(we, be chess.Engine) (winner chess.Color, moves int) {
 		}
 
 		m, _ := players[currPlayer].Move(b, currPlayer)
+		if m == (chess.Move{}) { // no possible moves, game over
+			return -currPlayer, i
+		}
 
 		if !chess.Allowed(b, currPlayer, m) {
-			log.Fatal("BUG: illegal move", currPlayer, m, "\n", b)
+			log.Fatalf("BUG: illegal move by %T %v %v\n%v", players[currPlayer], currPlayer, m, b)
 		}
 
 		b = b.WithMove(m)
