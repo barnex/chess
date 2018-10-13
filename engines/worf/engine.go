@@ -5,7 +5,6 @@ import (
 	"time"
 
 	. "github.com/barnex/chess"
-	"github.com/barnex/chess/engines/riker"
 )
 
 func New(depth int) Engine {
@@ -75,9 +74,23 @@ func Heuristic2(b *Board, c Color, m Move) float64 {
 
 	h := 0.0
 	for _, p := range b {
-		h += riker.ValueOf(p)
+		h += valueOf[p+6]
 	}
 	return float64(c) * (h + noise())
+}
+
+var valueOf = [13]float64{
+	WP + 6: 1,
+	WN + 6: 6,
+	WB + 6: 5,
+	WR + 6: 10,
+	WQ + 6: 20,
+
+	BP + 6: -1,
+	BN + 6: -6,
+	BB + 6: -5,
+	BR + 6: -10,
+	BQ + 6: -20,
 }
 
 func noise() float64 {
