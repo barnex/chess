@@ -8,17 +8,15 @@ import (
 )
 
 func New(depth int) Engine {
-	return &minimax{newRand(), depth, Heuristic2, 0}
+	return &worf{newRand(), depth}
 }
 
-type minimax struct {
-	rnd     *rand.Rand
-	depth   int
-	h       Heuristic
-	numEval int
+type worf struct {
+	rnd   *rand.Rand
+	depth int
 }
 
-func (e *minimax) Move(b *Board, c Color) (Move, float64) {
+func (e *worf) Move(b *Board, c Color) (Move, float64) {
 
 	var (
 		bestMove  = Move{}
@@ -34,10 +32,9 @@ func (e *minimax) Move(b *Board, c Color) (Move, float64) {
 	return bestMove, bestScore
 }
 
-func (e *minimax) negamax(b *Board, depth int, c Color, m Move) float64 {
+func (e *worf) negamax(b *Board, depth int, c Color, m Move) float64 {
 	if depth == 0 {
-		return e.h(b, c, m)
-		e.numEval++
+		return e.Heuristic2(b, c, m)
 	}
 
 	value := Inf(1)
@@ -62,7 +59,7 @@ func newRand() *rand.Rand {
 
 type Heuristic func(*Board, Color, Move) float64
 
-func Heuristic2(b *Board, c Color, m Move) float64 {
+func (e *worf) Heuristic2(b *Board, c Color, m Move) float64 {
 	NumEvals++
 
 	dst := b.At(m.Dst)
@@ -76,7 +73,7 @@ func Heuristic2(b *Board, c Color, m Move) float64 {
 	for _, p := range b {
 		h += valueOf[p+6]
 	}
-	return float64(c) * (h + noise())
+	return float64(c) * (h + e.noise())
 }
 
 var valueOf = [13]float64{
@@ -93,6 +90,6 @@ var valueOf = [13]float64{
 	BQ + 6: -20,
 }
 
-func noise() float64 {
-	return rand.Float64() / 1024
+func (e *worf) noise() float64 {
+	return e.rnd.Float64() / 1024
 }
