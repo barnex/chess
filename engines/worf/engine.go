@@ -38,13 +38,10 @@ func (e *worf) negamax(b *Board, depth int, c Color, m Move) float64 {
 	//	return Inf(w * c)
 	//}
 
-	b.AssertValid()
+	//b.AssertValid()
 
-	if b.At(m.Dst) == WK {
-		return Inf(-c * White)
-	}
-	if b.At(m.Dst) == BK {
-		return Inf(-c * Black)
+	if dst := b.At(m.Dst); dst == WK || dst == BK {
+		return Inf(-c * dst.Color())
 	}
 
 	if depth == 0 {
@@ -66,10 +63,6 @@ type Heuristic func(*Board, Color, Move) float64
 
 func (e *worf) Heuristic2(b *Board, c Color, m Move) float64 {
 	NumEvals++
-
-	if w := b.WithMove(m).Winner(); w != 0 {
-		return Inf(w * c)
-	}
 
 	b = b.WithMove(m)
 	h := 0.0
