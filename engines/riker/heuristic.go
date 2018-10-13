@@ -26,6 +26,10 @@ func Heuristic2(b *Board, c Color) float64 {
 	return float64(c) * (Inf(b.Winner()) + h + noise())
 }
 
+func ValueOf(p Piece) float64 {
+	return valueOf[p+6]
+}
+
 var valueOf = [13]float64{
 	WP + 6: 1,
 	WN + 6: 6,

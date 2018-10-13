@@ -37,8 +37,7 @@ func (e *minimax) Move(b *Board, c Color) (Move, float64) {
 
 func (e *minimax) negamax(b *Board, depth int, c Color, m Move) float64 {
 	if depth == 0 {
-		//return e.h(b, c, m)
-		return riker.Heuristic2(b.WithMove(m), c)
+		return e.h(b, c, m)
 		e.numEval++
 	}
 
@@ -67,38 +66,18 @@ type Heuristic func(*Board, Color, Move) float64
 func Heuristic2(b *Board, c Color, m Move) float64 {
 	NumEvals++
 
-	return riker.Heuristic2(b.WithMove(m), c)
+	dst := b.At(m.Dst)
+	if dst == BK || dst == WK {
+		return Inf(-dst.Color() * c)
+	}
 
-	//dst := b.At(m.Dst)
-	//if dst == BK || dst == WK {
-	//	return Inf(-dst.Color() * c)
-	//}
+	b = b.WithMove(m)
 
-	//b = b.WithMove(m)
-
-	//h := 0.0
-	//for _, p := range b {
-	//	h += ValueOf(p)
-	//}
-	//return float64(c) * (h + noise())
-}
-
-func ValueOf(p Piece) float64 {
-	return valueOf[p+6]
-}
-
-var valueOf = [13]float64{
-	WP + 6: 1,
-	WN + 6: 6,
-	WB + 6: 5,
-	WR + 6: 10,
-	WQ + 6: 20,
-
-	BP + 6: -1,
-	BN + 6: -6,
-	BB + 6: -5,
-	BR + 6: -10,
-	BQ + 6: -20,
+	h := 0.0
+	for _, p := range b {
+		h += riker.ValueOf(p)
+	}
+	return float64(c) * (h + noise())
 }
 
 func noise() float64 {
