@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"time"
 
 	. "github.com/barnex/chess"
 	"github.com/barnex/chess/engines/riker"
@@ -26,10 +27,19 @@ func main() {
 	current := 0
 	for b.Winner() == Nobody {
 
-		m, score := players[current].Move(b, colors[current])
+		NumEvals = 0
+		start := time.Now()
 
+		player := players[current]
+		color := colors[current]
+		m, score := player.Move(b, color)
+
+		duration := time.Since(start)
+		evals := float64(NumEvals)
+		rate := evals / duration.Seconds()
 		src := b.At(m.Src)
-		fmt.Printf("%v%v %.3f\n", src, m, score)
+		fmt.Printf("%v%v [%+.2f] %.3fM evals in %v = %.3fM/s \n", src, m, score, evals/1e6, duration.Round(time.Millisecond), rate/1e6)
+
 		b = b.WithMove(m)
 		Render(b)
 

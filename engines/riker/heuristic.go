@@ -13,10 +13,12 @@ func Heuristic0(_ *Board, _ Color) float64 {
 }
 
 func Heuristic1(b *Board, c Color) float64 {
+	NumEvals++
 	return float64(c) * (Inf(c*b.Winner()) + noise())
 }
 
 func Heuristic2(b *Board, c Color) float64 {
+	NumEvals++
 	h := 0.0
 	for _, p := range b {
 		h += valueOf[p+6]
