@@ -40,6 +40,10 @@ var engines = map[string]func() Engine{
 	"worf":  func() Engine { return worf.New(*flagD - 1) },
 }
 
+var (
+	b *Board
+)
+
 func main() {
 	flag.Parse()
 
@@ -47,10 +51,6 @@ func main() {
 	if !ok {
 		log.Fatalf("unknown engine: %v", *flagE)
 	}
-
-	fmt.Println()
-
-	b := NewBoard()
 
 	var msg string
 	var players [2]Engine
@@ -61,6 +61,8 @@ func main() {
 		players = [2]Engine{Stdin("white: "), ai()}
 		msg = fmt.Sprintf("White: you\nBlack: %v%v\n", *flagE, *flagD)
 	}
+
+	b = NewBoard()
 	Render(b, map[Pos]bool{}, msg)
 
 	colors := [2]Color{White, Black}
@@ -121,6 +123,7 @@ func main() {
 		}
 
 		b = b.WithMove(m)
+
 		mark := map[Pos]bool{
 			m.Src: true,
 			m.Dst: true,

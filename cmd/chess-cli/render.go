@@ -32,6 +32,10 @@ const (
 
 func Render(b *Board, mark map[Pos]bool, sideText string) {
 
+	if mark == nil {
+		mark = map[Pos]bool{}
+	}
+
 	colorOf := func(r, c int) string {
 		if (r+c)%2 == 0 {
 			if mark[RC(r, c)] {
