@@ -16,42 +16,46 @@ const (
 	fgDark  = "\033[38;5;250m"
 	fgBlack = "\033[38;5;232m"
 
+	bg = "\033[48;5;"
+	fg = "\033[38;5;"
+
+	dark  = "250m"
+	light = "255m"
+	black = "232m"
+
 	reset = "\033[39;49m"
 )
 
 func Render(b *Board) {
+
+	colorOf := func(r, c int) string {
+		if (r+c)%2 == 0 {
+			return light
+		} else {
+			return dark
+		}
+	}
+
 	for r := 7; r >= 0; r-- {
 
 		fmt.Print(reset, fgDark, r+1, reset)
 
 		for c := 0; c < 8; c++ {
-			fmt.Print(reset)
-			switch c {
-			case 0:
-				if (c+r)%2 == 0 {
-					fmt.Print(fgDark, halfR, bgDark)
-				} else {
-					fmt.Print(fgLight, halfR, bgLight)
-				}
-			default:
-				if (c+r)%2 == 0 {
-					fmt.Print(bgLight, fgDark, halfR, bgDark)
-				} else {
-					fmt.Print(bgLight, fgDark, halfL, bgLight)
-				}
-			}
+
 			piece := b.At(RC(r, c)).String()
 			if b.At(RC(r, c)) == 0 {
 				piece = " "
 			}
-			fmt.Print(fgBlack, piece)
 
+			fmt.Print(reset)
+
+			if c == 0 {
+				fmt.Print(fg, colorOf(r, c), halfR, bg, colorOf(r, c), fg, black, piece)
+			} else {
+				fmt.Print(bg, colorOf(r, c-1), fg, colorOf(r, c), halfR, bg, colorOf(r, c), fg, black, piece)
+			}
 		}
-		if (r)%2 == 1 {
-			fmt.Print(reset, fgDark, halfL, reset)
-		} else {
-			fmt.Print(reset, fgLight, halfL, reset)
-		}
+		fmt.Print(reset, fg, colorOf(r, 7), halfL)
 		fmt.Println()
 	}
 	fmt.Print(reset, fgDark, "  a b c d e f g h", reset, "\n")
