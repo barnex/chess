@@ -15,6 +15,7 @@ E.g.:
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"log"
@@ -50,46 +51,72 @@ func main() {
 
 	b := NewBoard()
 
-	Render(b, map[Pos]bool{})
+	Render(b, map[Pos]bool{}, "welcome\nto\nchess")
 
-	players := [2]Engine{ai(), Stdin("player: ")}
+	players := [2]Engine{ai(), Stdin("black: ")}
 	colors := [2]Color{White, Black}
 	names := []string{"white", "black"}
 	current := 0
+	moveNum := 0
+	allCap := map[Color][]Piece{}
 	for b.Winner() == Nobody {
 
-		NumEvals = 0
-		start := time.Now()
+		var buf bytes.Buffer // text beside the board
+		printf := func(f string, x ...interface{}) {
+			fmt.Fprintf(&buf, f, x...)
+		}
 
+		moveNum++
+		NumEvals = 0
+
+		// do the move
+		start := time.Now()
 		player := players[current]
 		color := colors[current]
 		m, score := player.Move(b, color)
-
 		duration := time.Since(start)
-		evals := float64(NumEvals)
-		rate := evals / duration.Seconds()
-		src := b.At(m.Src)
 
-		if *flagV {
-			fmt.Printf("score:%+.2f, evals:%.3fM, time:%v, speed:%.3fM/s\n",
-				score, evals/1e6, duration.Round(time.Millisecond), rate/1e6)
-		}
-
-		fmt.Printf("\n%v: %v%v", names[current], src, m)
+		// print move
+		printf(fgDark+"move %v\n%v: %v%v"+reset, moveNum, names[current], b.At(m.Src), m)
+		// print captured this move
 		if x := b.At(m.Dst); x != 00 {
-			fmt.Printf(" x%v", x)
+			printf(" x%v", x)
+			allCap[x.Color()] = append(allCap[x.Color()], x)
 		}
 		if x := IsCheck(b.WithMove(m)); x != 00 {
-			fmt.Printf("+ [CHECK!]")
+			printf("+ [CHECK!]")
 		}
-		fmt.Println()
+		printf("\n")
+
+		// print duration
+		printf(fgDark+"%v\n"+reset, duration.Round(time.Millisecond))
+
+		// print stats
+		{
+			evals := float64(NumEvals)
+			rate := evals / duration.Seconds()
+			if *flagV {
+				printf("score:%+.2f\nevals:%.3fM\nspeed:%.3fM/s\n",
+					score, evals/1e6, rate/1e6)
+			} else {
+				printf("\n\n\n")
+			}
+		}
+
+		// print all captured
+		for _, c := range []Color{White, Black} {
+			for _, x := range allCap[c] {
+				printf(bgLight+fgBlack+"%v", x)
+			}
+			printf(reset + "\n")
+		}
 
 		b = b.WithMove(m)
 		mark := map[Pos]bool{
 			m.Src: true,
 			m.Dst: true,
 		}
-		Render(b, mark)
+		Render(b, mark, buf.String())
 
 		current = 1 - current
 	}

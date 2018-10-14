@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 
 	. "github.com/barnex/chess"
 )
@@ -29,7 +30,7 @@ const (
 	reset = "\033[39;49m"
 )
 
-func Render(b *Board, mark map[Pos]bool) {
+func Render(b *Board, mark map[Pos]bool, sideText string) {
 
 	colorOf := func(r, c int) string {
 		if (r+c)%2 == 0 {
@@ -45,8 +46,14 @@ func Render(b *Board, mark map[Pos]bool) {
 		}
 	}
 
-	for r := 7; r >= 0; r-- {
+	side := strings.Split(sideText, "\n")
+	for len(side) < 8 {
+		side = append(side, "")
+	}
 
+	i := 0
+	for r := 7; r >= 0; r-- {
+		// print row number
 		fmt.Print(reset, fgDark, r+1, reset)
 
 		for c := 0; c < 8; c++ {
@@ -56,16 +63,19 @@ func Render(b *Board, mark map[Pos]bool) {
 				piece = " "
 			}
 
+			// print transition from previous to new tile+pice
 			fmt.Print(reset)
-
 			if c == 0 {
 				fmt.Print(fg, colorOf(r, c), halfR, bg, colorOf(r, c), fg, black, piece)
 			} else {
 				fmt.Print(bg, colorOf(r, c-1), fg, colorOf(r, c), halfR, bg, colorOf(r, c), fg, black, piece)
 			}
 		}
+		// print final transition, end of row
 		fmt.Print(reset, fg, colorOf(r, 7), halfL)
-		fmt.Println()
+		fmt.Println(reset, side[i])
+		i++
 	}
+	// print column numbers
 	fmt.Print(reset, fgDark, "  a b c d e f g h", reset, "\n")
 }
