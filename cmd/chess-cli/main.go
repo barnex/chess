@@ -28,15 +28,16 @@ import (
 )
 
 var (
-	flagD = flag.Int("d", 4, "depth")
+	flagD = flag.Int("d", 2, "depth")
 	flagE = flag.String("e", "worf", "opponent: tarr|riker|worf")
 	flagV = flag.Bool("v", false, "verbose output")
+	flagB = flag.Bool("b", false, "play as black")
 )
 
 var engines = map[string]func() Engine{
 	"tarr":  func() Engine { return tarr.New(tarr.Heuristic2) },
-	"riker": func() Engine { return riker.New(*flagD) },
-	"worf":  func() Engine { return worf.New(*flagD) },
+	"riker": func() Engine { return riker.New(*flagD - 1) },
+	"worf":  func() Engine { return worf.New(*flagD - 1) },
 }
 
 func main() {
@@ -51,9 +52,17 @@ func main() {
 
 	b := NewBoard()
 
-	Render(b, map[Pos]bool{}, "welcome\nto\nchess")
+	var msg string
+	var players [2]Engine
+	if *flagB {
+		players = [2]Engine{ai(), Stdin("black: ")}
+		msg = fmt.Sprintf("White: %v%v\nBlack: you\n", *flagE, *flagD)
+	} else {
+		players = [2]Engine{Stdin("white: "), ai()}
+		msg = fmt.Sprintf("White: you\nBlack: %v%v\n", *flagE, *flagD)
+	}
+	Render(b, map[Pos]bool{}, msg)
 
-	players := [2]Engine{ai(), Stdin("black: ")}
 	colors := [2]Color{White, Black}
 	names := []string{"white", "black"}
 	current := 0
