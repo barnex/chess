@@ -1,3 +1,17 @@
+/*
+Command chess-cli provides a chess command line interface.
+
+It requires a utf-8 capable, 256 color terminal emulator
+like most modern Linux terminals.
+
+The player types moves as algebraic notation:
+https://en.wikipedia.org/wiki/Algebraic_notation_(chess)
+
+E.g.:
+	a2a3    a2 to a3
+	a3      pawn to a3, if unambiguous
+	Ng3     knight to g3, if unambiguous
+*/
 package main
 
 import (
