@@ -23,19 +23,25 @@ const (
 	light = "231m"
 	black = "232m"
 
-	markDark  = "226m"
-	markLight = "228m"
+	markDark  = "49m"
+	markLight = "193m"
 
 	reset = "\033[39;49m"
 )
 
-func Render(b *Board) {
+func Render(b *Board, mark map[Pos]bool) {
 
 	colorOf := func(r, c int) string {
 		if (r+c)%2 == 0 {
-			return light
-		} else {
+			if mark[RC(r, c)] {
+				return markDark
+			}
 			return dark
+		} else {
+			if mark[RC(r, c)] {
+				return markLight
+			}
+			return light
 		}
 	}
 

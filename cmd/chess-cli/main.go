@@ -50,11 +50,11 @@ func main() {
 
 	b := NewBoard()
 
-	Render(b)
+	Render(b, map[Pos]bool{})
 
-	players := [2]Engine{Stdin("player: "), ai()}
+	players := [2]Engine{ai(), Stdin("player: ")}
 	colors := [2]Color{White, Black}
-	names := []string{"player", *flagE}
+	names := []string{"white", "black"}
 	current := 0
 	for b.Winner() == Nobody {
 
@@ -85,7 +85,11 @@ func main() {
 		fmt.Println()
 
 		b = b.WithMove(m)
-		Render(b)
+		mark := map[Pos]bool{
+			m.Src: true,
+			m.Dst: true,
+		}
+		Render(b, mark)
 
 		current = 1 - current
 	}
