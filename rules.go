@@ -1,5 +1,16 @@
 package chess
 
+func IsCheck(b *Board) Color {
+	for _, c := range []Color{White, Black} {
+		for _, m := range AllMoves(b, c) {
+			if b.At(m.Dst) == WK*(-Piece(c)) {
+				return -c
+			}
+		}
+	}
+	return 0
+}
+
 func AllMoves(b *Board, c Color) []Move {
 	var moves []Move
 	pos := make([]Pos, 0, 64)

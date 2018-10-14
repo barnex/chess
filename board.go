@@ -31,17 +31,6 @@ func Upright(b *Board) *Board {
 	return b2
 }
 
-func (b *Board) Slice() [][]Piece {
-	s := make([][]Piece, 8)
-	for i := range s {
-		s[i] = make([]Piece, 8)
-		for j := range s[i] {
-			s[i][j] = b.At(RC(i, j))
-		}
-	}
-	return s
-}
-
 func (b *Board) At(p Pos) Piece {
 	return b[int(p[0]<<3|p[1])]
 }
