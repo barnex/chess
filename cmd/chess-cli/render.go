@@ -19,9 +19,12 @@ const (
 	bg = "\033[48;5;"
 	fg = "\033[38;5;"
 
-	dark  = "250m"
-	light = "255m"
+	dark  = "252m"
+	light = "231m"
 	black = "232m"
+
+	markDark  = "226m"
+	markLight = "228m"
 
 	reset = "\033[39;49m"
 )
