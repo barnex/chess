@@ -21,12 +21,23 @@ type stdin struct {
 }
 
 func (e *stdin) Move(b *Board, c Color) (Move, float64) {
-	move, err := Parse(e.ReadLine(), b, c)
+	move, err := ParseAndValidate(e.ReadLine(), b, c)
 	for err != nil {
 		fmt.Println(err)
-		move, err = Parse(e.ReadLine(), b, c)
+		move, err = ParseAndValidate(e.ReadLine(), b, c)
 	}
 	return move, 0
+}
+
+func ParseAndValidate(line string, b *Board, c Color) (Move, error) {
+	move, err := Parse(line, b, c)
+	if err != nil {
+		return Move{}, err
+	}
+	if !Allowed(b, c, move) {
+		return Move{}, illegalMove(move)
+	}
+	return move, nil
 }
 
 func Parse(line string, b *Board, c Color) (Move, error) {
@@ -34,7 +45,7 @@ func Parse(line string, b *Board, c Color) (Move, error) {
 
 	switch len(line) {
 	default:
-		return Move{}, fmt.Errorf("syntax error: %q", line)
+		return Move{}, syntaxError(line)
 	case 2:
 		return Parse2(line, b, c)
 	case 3:
@@ -47,38 +58,16 @@ func Parse(line string, b *Board, c Color) (Move, error) {
 // Parse2 parses a 2-character move, like
 // 	a3
 // which means to move a pawn to a3.
-// Returns an error if the move is ambiguous of not allowed.
+// Returns an error if the move is ambiguous or not allowed.
 func Parse2(line string, b *Board, c Color) (Move, error) {
 	return Parse3("P"+line, b, c)
-	//dst, err := ParsePos(line)
-	//if err != nil {
-	//	return Move{}, err
-	//}
-
-	//myPawn := WP * Piece(c)
-	//var cand []Move
-	//for _, a := range AllMoves(b, c) {
-	//	if b.At(a.Src) == myPawn && a.Dst == dst {
-	//		cand = append(cand, a)
-	//	}
-	//}
-	//switch len(cand) {
-	//case 0:
-	//	return Move{}, fmt.Errorf("%v not allowed", line)
-	//case 1:
-	//	return cand[0], nil
-	//default:
-	//	return Move{}, fmt.Errorf("%v is ambigous: %v match", line, cand)
-	//}
-
 }
 
 // Parse3 parses a 3-character move, like
 // 	Nf3
 // which means to move a knight to f3.
-// Returns an error if the move is ambiguous of not allowed.
+// Returns an error if the move is ambiguous or not allowed.
 func Parse3(line string, b *Board, c Color) (Move, error) {
-
 	p, err := ParsePiece(line[:1])
 	if err != nil {
 		return Move{}, err
@@ -98,13 +87,12 @@ func Parse3(line string, b *Board, c Color) (Move, error) {
 	}
 	switch len(cand) {
 	case 0:
-		return Move{}, fmt.Errorf("%v not allowed", line)
+		return Move{}, illegalMove(line)
 	case 1:
 		return cand[0], nil
 	default:
-		return Move{}, fmt.Errorf("%v is ambigous: %v match", line, cand)
+		return Move{}, ambiguousMove(line, cand)
 	}
-
 }
 
 func ParsePiece(line string) (Piece, error) {
@@ -117,7 +105,7 @@ func ParsePiece(line string) (Piece, error) {
 		"K": WK, "k": WK,
 	}[line]
 	if !ok {
-		return 00, fmt.Errorf("no such piece %q, options: R N B Q K", line)
+		return 00, syntaxError(line)
 	}
 	return p, nil
 }
@@ -141,13 +129,13 @@ func Parse4(line string) (Move, error) {
 
 func ParsePos(txt string) (Pos, error) {
 	if len(txt) != 2 {
-		return Pos{}, fmt.Errorf("syntax error")
+		return Pos{}, syntaxError(txt)
 	}
 	c := int(txt[0]) - int('a')
 	r := int(txt[1]) - int('1')
 
 	if r < 0 || r > 7 || c < 0 || c > 7 {
-		return Pos{}, fmt.Errorf("syntax error: %q", txt)
+		return Pos{}, syntaxError(txt)
 	}
 	return RC(r, c), nil
 }
@@ -161,4 +149,16 @@ func (e *stdin) ReadLine() string {
 		log.Fatal(e.scanner.Err())
 	}
 	return e.scanner.Text()
+}
+
+func syntaxError(line string) error {
+	return fmt.Errorf("i don't understand %q", line)
+}
+
+func illegalMove(m interface{}) error {
+	return fmt.Errorf("%v is illegal", m)
+}
+
+func ambiguousMove(line string, cand []Move) error {
+	return fmt.Errorf("%v is ambiguous, matches: %v", line, cand)
 }
