@@ -13,5 +13,5 @@ func New() Engine {
 type cheat struct{}
 
 func (e *cheat) Move(b *Board, c Color) (Move, float64) {
-	return Move{RC(0, 1), RC(3, 4)}, 0
+	return MoveP(RC(0, 1), RC(3, 4)), 0
 }

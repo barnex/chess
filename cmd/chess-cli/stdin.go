@@ -99,7 +99,7 @@ func Parse3(line string, b *Board, c Color) (Move, error) {
 	myPiece := p * Piece(c)
 	var cand []Move
 	for _, a := range AllMoves(b, c) {
-		if b.At(a.Src) == myPiece && a.Dst == dst {
+		if b.At(a.Src()) == myPiece && a.Dst() == dst {
 			cand = append(cand, a)
 		}
 	}
@@ -141,7 +141,7 @@ func Parse4(line string) (Move, error) {
 		return Move{}, err
 	}
 
-	m := Move{src, dst}
+	m := MoveP(src, dst)
 	return m, nil
 }
 
