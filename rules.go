@@ -3,7 +3,7 @@ package chess
 func IsCheck(b *Board) Color {
 	for _, c := range []Color{White, Black} {
 		for _, m := range AllMoves(b, c) {
-			if b.At(m.Dst) == WK*(-Piece(c)) {
+			if b.At(m.Dst()) == WK*(-Piece(c)) {
 				return -c
 			}
 		}
@@ -14,12 +14,13 @@ func IsCheck(b *Board) Color {
 func AllMoves(b *Board, c Color) []Move {
 	var moves []Move
 	pos := make([]Pos, 0, 64)
-	for p := (Pos{}); p.Valid(); p = p.Next() {
-		if b.At(p).Color() == c {
+	for i_ := range b {
+		i := Index(i_)
+		if b.AtIndex(i).Color() == c {
 			pos = pos[:0]
-			Moves(b, p, &pos)
+			Moves(b, i, &pos)
 			for _, dst := range pos {
-				moves = append(moves, Move{p, dst})
+				moves = append(moves, Move{i, dst.Index()})
 			}
 
 		}
@@ -27,8 +28,9 @@ func AllMoves(b *Board, c Color) []Move {
 	return moves
 }
 
-func Moves(b *Board, src Pos, dst *[]Pos) {
-	switch b.At(src) {
+func Moves(b *Board, src_ Index, dst *[]Pos) {
+	src := src_.Pos()
+	switch b.AtIndex(src_) {
 	case 00:
 		return
 	case WP:
@@ -49,13 +51,13 @@ func Moves(b *Board, src Pos, dst *[]Pos) {
 }
 
 func Allowed(b *Board, c Color, m Move) bool {
-	if b.At(m.Src).Color() != c {
+	if b.At(m.Src()).Color() != c {
 		return false
 	}
 	var all []Pos
-	Moves(b, m.Src, &all)
+	Moves(b, m.src, &all)
 	for _, a := range all {
-		if m.Dst == a {
+		if m.Dst() == a {
 			return true
 		}
 	}

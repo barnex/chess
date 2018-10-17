@@ -11,7 +11,7 @@ func MarkAllMoves(b *Board, typ ...Piece) {
 			if b.At(p) == typ {
 				fmt.Printf("moves for %v%v\n", b.At(p), p)
 				var moves []Pos
-				Moves(b, p, &moves)
+				Moves(b, p.Index(), &moves)
 				mark(b, moves)
 				fmt.Println()
 			}

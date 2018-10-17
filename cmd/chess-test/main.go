@@ -7,7 +7,7 @@ import (
 	"math"
 
 	"github.com/barnex/chess"
-	"github.com/barnex/chess/engines/riker"
+	"github.com/barnex/chess/engines/troi"
 	"github.com/barnex/chess/engines/worf"
 )
 
@@ -16,8 +16,11 @@ func main() {
 	//engineA := random.New()
 	//engineB := tarr.New(tarr.Heuristic2)
 
-	engineA := riker.New(2)
-	engineB := worf.New(2)
+	//engineA := riker.New(2)
+	//engineB := worf.New(2)
+
+	engineA := worf.New(2)
+	engineB := troi.New(2)
 
 	var (
 		totalMoves int

@@ -56,6 +56,17 @@ func (p Pos) index() int {
 	return int(p[0]<<3 | p[1])
 }
 
+func (p Pos) Index() Index {
+	return Index(p.index())
+}
+
+// TODO: rm
+func I2P(i int) Pos {
+	c := i & 0x7
+	r := i >> 3
+	return RC(r, c)
+}
+
 func RC(r, c int) Pos {
 	//if r < 0 || r > 7 || c < 0 || c > 7 {
 	//	panic(fmt.Sprintf("pos out of bounds: (%v, %v)", r, c))

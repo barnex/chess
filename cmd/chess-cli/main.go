@@ -24,20 +24,22 @@ import (
 	. "github.com/barnex/chess"
 	"github.com/barnex/chess/engines/riker"
 	"github.com/barnex/chess/engines/tarr"
+	"github.com/barnex/chess/engines/troi"
 	"github.com/barnex/chess/engines/worf"
 )
 
 var (
 	flagD = flag.Int("d", 2, "depth")
-	flagE = flag.String("e", "worf", "opponent: tarr|riker|worf")
+	flagE = flag.String("e", "worf", "opponent: tarr|riker|worf|troi")
 	flagV = flag.Bool("v", false, "verbose output")
 	flagB = flag.Bool("b", false, "play as black")
 )
 
 var engines = map[string]func() Engine{
 	"tarr":  func() Engine { return tarr.New(tarr.Heuristic2) },
-	"riker": func() Engine { return riker.New(*flagD - 1) },
-	"worf":  func() Engine { return worf.New(*flagD - 1) },
+	"riker": func() Engine { return riker.New(*flagD) },
+	"worf":  func() Engine { return worf.New(*flagD) },
+	"troi":  func() Engine { return troi.New(*flagD) },
 }
 
 var (

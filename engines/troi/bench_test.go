@@ -1,4 +1,4 @@
-package worf
+package troi
 
 import (
 	"testing"

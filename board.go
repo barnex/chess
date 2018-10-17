@@ -35,21 +35,25 @@ func (b *Board) At(p Pos) Piece {
 	return b[int(p[0]<<3|p[1])]
 }
 
+func (b *Board) AtIndex(p Index) Piece {
+	return b[p]
+}
+
 func (b *Board) WithMove(m Move) *Board {
 
 	// hack: always promote to queen
 	// TODO: allow choice
-	p := b.At(m.Src)
-	if p == WP && m.Dst.Row() == 7 {
+	p := b.At(m.Src())
+	if p == WP && m.Dst().Row() == 7 {
 		p = WQ
 	}
-	if p == BP && m.Dst.Row() == 0 {
+	if p == BP && m.Dst().Row() == 0 {
 		p = BQ
 	}
 
 	c := b.copy()
-	c[m.Dst.index()] = p
-	c[m.Src.index()] = 00
+	c[m.Dst().index()] = p
+	c[m.Src().index()] = 00
 
 	return c
 }

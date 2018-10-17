@@ -14,14 +14,14 @@ func ExamplePromotion() {
 		00, 00, 00, 00, 00, 00, 00, 00,
 	})
 
-	b = b.WithMove(Move{RC(5, 1), RC(6, 1)})
+	b = b.WithMove(MoveP(RC(5, 1), RC(6, 1)))
 	fmt.Println(b)
-	b = b.WithMove(Move{RC(6, 1), RC(7, 1)})
+	b = b.WithMove(MoveP(RC(6, 1), RC(7, 1)))
 	fmt.Println(b)
 
-	b = b.WithMove(Move{RC(2, 4), RC(1, 4)})
+	b = b.WithMove(MoveP(RC(2, 4), RC(1, 4)))
 	fmt.Println(b)
-	b = b.WithMove(Move{RC(1, 4), RC(0, 4)})
+	b = b.WithMove(MoveP(RC(1, 4), RC(0, 4)))
 	fmt.Println(b)
 
 	//Output:

@@ -2,7 +2,6 @@ package worf
 
 import (
 	"math/rand"
-	"time"
 
 	. "github.com/barnex/chess"
 )
@@ -23,7 +22,7 @@ func (e *worf) Move(b *Board, c Color) (Move, float64) {
 	)
 	for _, m := range AllMoves(b, c) {
 		n := &Node{*b, Heuristic2(b, m)}
-		s := float64(e.negamax(n, e.depth, c, m)) + e.noise()
+		s := float64(e.negamax(n, e.depth, c, m)) + e.noise() //break ties
 		if s > bestScore {
 			bestScore = s
 			bestMove = m
@@ -40,7 +39,6 @@ type Node struct {
 func (n *Node) WithMove(m Move) *Node {
 	return &Node{
 		*n.board.WithMove(m),
-		//Heuristic3(n, m),
 		Heuristic2(&n.board, m),
 	}
 }
@@ -72,11 +70,6 @@ func Heuristic3(n *Node, m Move) int {
 	delta := -valueOf[n.board.At(m.Dst)+6]
 	fast := (n.value + delta)
 
-	//check := Heuristic2(&n.board, m)
-	//fmt.Printf("have %v, delta %v, want %v\n", n.value, delta, check)
-	//if fast != check {
-	//   panic(fmt.Sprintf("%v != %v", fast, check))
-	//}
 	return fast
 }
 
@@ -109,10 +102,6 @@ func min(a, b int) int {
 		return a
 	}
 	return b
-}
-
-func newRand() *rand.Rand {
-	return rand.New(rand.NewSource(time.Now().UnixNano()))
 }
 
 func (e *worf) noise() float64 {
