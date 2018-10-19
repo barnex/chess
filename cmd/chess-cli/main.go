@@ -90,9 +90,9 @@ func main() {
 		duration := time.Since(start)
 
 		// print move
-		printf(fgDark+"move %v\n%v: %v%v"+reset, moveNum, names[current], b.At(m.Src()), m)
+		printf(fgDark+"move %v\n%v: %v%v"+reset, moveNum, names[current], b.At(m.SrcI()), m)
 		// print captured this move
-		if x := b.At(m.Dst()); x != 00 {
+		if x := b.At(m.DstI()); x != 00 {
 			printf(" x%v", x)
 			allCap[x.Color()] = append(allCap[x.Color()], x)
 		}

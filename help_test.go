@@ -8,9 +8,9 @@ import (
 func MarkAllMoves(b *Board, typ ...Piece) {
 	for _, typ := range typ {
 		for p := RC(0, 0); p.Valid(); p = p.Next() {
-			if b.At(p) == typ {
-				fmt.Printf("moves for %v%v\n", b.At(p), p)
-				var moves []Pos
+			if b.At(p.Index()) == typ {
+				fmt.Printf("moves for %v%v\n", b.At(p.Index()), p)
+				var moves []Index
 				Moves(b, p.Index(), &moves)
 				mark(b, moves)
 				fmt.Println()
@@ -19,10 +19,10 @@ func MarkAllMoves(b *Board, typ ...Piece) {
 	}
 }
 
-func mark(b *Board, p []Pos) {
+func mark(b *Board, p []Index) {
 	c := b.copy()
 	for _, p := range p {
-		c[p.index()] = 100
+		c[p] = 100
 	}
 	fmt.Println(c)
 }

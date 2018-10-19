@@ -2,13 +2,13 @@ package chess
 
 func AllPre(b *Board, c Color) []Move {
 	var moves []Move
-	pos := make([]Pos, 0, 64)
-	for p := (Pos{}); p.Valid(); p = p.Next() {
-		if b.At(p).Color() == c {
+	pos := make([]Index, 0, 64)
+	for i, p := range b {
+		if p.Color() == c {
 			pos = pos[:0]
-			Pre(b, p, &pos)
+			Pre(b, Index(i), &pos)
 			for _, dst := range pos {
-				moves = append(moves, MoveP(p, dst))
+				moves = append(moves, Move{Index(i), dst})
 			}
 
 		}
@@ -16,7 +16,7 @@ func AllPre(b *Board, c Color) []Move {
 	return moves
 }
 
-func Pre(b *Board, src Pos, dst *[]Pos) {
+func Pre(b *Board, src Index, dst *[]Index) {
 	switch b.At(src) {
 	case 00:
 		return
@@ -37,35 +37,35 @@ func Pre(b *Board, src Pos, dst *[]Pos) {
 	}
 }
 
-func QPre(b *Board, src Pos, dst *[]Pos) {
+func QPre(b *Board, src Index, dst *[]Index) {
 	RPre(b, src, dst)
 	BPre(b, src, dst)
 }
 
-func RPre(b *Board, src Pos, dst *[]Pos) {
+func RPre(b *Board, src Index, dst *[]Index) {
 	pmarch(Front, b, src, dst)
 	pmarch(Back, b, src, dst)
 	pmarch(Left, b, src, dst)
 	pmarch(Right, b, src, dst)
 }
 
-func BPre(b *Board, src Pos, dst *[]Pos) {
+func BPre(b *Board, src Index, dst *[]Index) {
 	pmarch(FrontRight, b, src, dst)
 	pmarch(FrontLeft, b, src, dst)
 	pmarch(BackRight, b, src, dst)
 	pmarch(BackLeft, b, src, dst)
 }
 
-func pmarch(d Pos, b *Board, src Pos, dst *[]Pos) {
-	for p := src.Add(d); p.Valid(); p = p.Add(d) {
-		*dst = append(*dst, p)
-		if b.At(p).Color() != 00 {
+func pmarch(d Pos, b *Board, src Index, dst *[]Index) {
+	for p := src.Pos().Add(d); p.Valid(); p = p.Add(d) {
+		*dst = append(*dst, p.Index())
+		if b.At(p.Index()).Color() != 00 {
 			break
 		}
 	}
 }
 
-func NPre(b *Board, src Pos, dst *[]Pos) {
+func NPre(b *Board, src Index, dst *[]Index) {
 	d := []Pos{
 		{-2, -1}, {-1, -2},
 		{+2, -1}, {+1, -2},
@@ -74,7 +74,7 @@ func NPre(b *Board, src Pos, dst *[]Pos) {
 	pjump(d, b, src, dst)
 }
 
-func KPre(b *Board, src Pos, dst *[]Pos) {
+func KPre(b *Board, src Index, dst *[]Index) {
 	d := []Pos{
 		{-1, -1}, {-1, 0}, {-1, 1},
 		{0, -1}, {0, 1},
@@ -83,51 +83,51 @@ func KPre(b *Board, src Pos, dst *[]Pos) {
 	pjump(d, b, src, dst)
 }
 
-func pjump(d []Pos, b *Board, src Pos, dst *[]Pos) {
+func pjump(d []Pos, b *Board, src Index, dst *[]Index) {
 	for _, d := range d {
-		p := src.Add(d)
+		p := src.Pos().Add(d)
 		if p.Valid() {
-			*dst = append(*dst, p)
+			*dst = append(*dst, p.Index())
 		}
 	}
 }
 
-func WPPre(b *Board, src Pos, dst *[]Pos) {
+func WPPre(b *Board, src Index, dst *[]Index) {
 	// one row forward
-	if p := src.Add(Front); p.Valid() && b.At(p) == 00 {
-		*dst = append(*dst, p)
+	if p := src.Pos().Add(Front); p.Valid() && b.At(p.Index()) == 00 {
+		*dst = append(*dst, p.Index())
 	}
 
 	// two rows forward
-	if p := src.Add(Pos{2, 0}); p.Row() == 3 && b.At(p) == 00 && b.At(src.Add(Front)) == 00 {
-		*dst = append(*dst, p)
+	if p := src.Pos().Add(Pos{2, 0}); p.Row() == 3 && b.At(p.Index()) == 00 && b.At(src.Pos().Add(Front).Index()) == 00 {
+		*dst = append(*dst, p.Index())
 	}
 
-	if p := src.Add(FrontLeft); p.Valid() {
-		*dst = append(*dst, p)
+	if p := src.Pos().Add(FrontLeft); p.Valid() {
+		*dst = append(*dst, p.Index())
 	}
 
-	if p := src.Add(FrontRight); p.Valid() {
-		*dst = append(*dst, p)
+	if p := src.Pos().Add(FrontRight); p.Valid() {
+		*dst = append(*dst, p.Index())
 	}
 }
 
-func BPPre(b *Board, src Pos, dst *[]Pos) {
+func BPPre(b *Board, src Index, dst *[]Index) {
 	// one row forward
-	if p := src.Add(Back); p.Valid() && b.At(p) == 00 {
-		*dst = append(*dst, p)
+	if p := src.Pos().Add(Back); p.Valid() && b.At(p.Index()) == 00 {
+		*dst = append(*dst, p.Index())
 	}
 
 	// two rows forward
-	if p := src.Add(Pos{-2, 0}); p.Row() == 4 && b.At(p) == 00 && b.At(src.Add(Back)) == 00 {
-		*dst = append(*dst, p)
+	if p := src.Pos().Add(Pos{-2, 0}); p.Row() == 4 && b.At(p.Index()) == 00 && b.At(src.Pos().Add(Back).Index()) == 00 {
+		*dst = append(*dst, p.Index())
 	}
 
-	if p := src.Add(BackLeft); p.Valid() {
-		*dst = append(*dst, p)
+	if p := src.Pos().Add(BackLeft); p.Valid() {
+		*dst = append(*dst, p.Index())
 	}
 
-	if p := src.Add(BackRight); p.Valid() {
-		*dst = append(*dst, p)
+	if p := src.Pos().Add(BackRight); p.Valid() {
+		*dst = append(*dst, p.Index())
 	}
 }

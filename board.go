@@ -25,17 +25,17 @@ func Upright(b *Board) *Board {
 	for r := 0; r < 8; r++ {
 		r2 := 7 - r
 		for c := 0; c < 8; c++ {
-			b2[RC(r2, c).index()] = b.At(RC(r, c))
+			b2[RC(r2, c).index()] = b.At(RC(r, c).Index())
 		}
 	}
 	return b2
 }
 
-func (b *Board) At(p Pos) Piece {
-	return b[int(p[0]<<3|p[1])]
-}
+//func (b *Board) At(p Pos) Piece {
+//	return b[int(p[0]<<3|p[1])]
+//}
 
-func (b *Board) AtIndex(p Index) Piece {
+func (b *Board) At(p Index) Piece {
 	return b[p]
 }
 
@@ -43,7 +43,7 @@ func (b *Board) WithMove(m Move) *Board {
 
 	// hack: always promote to queen
 	// TODO: allow choice
-	p := b.At(m.Src())
+	p := b.At(m.SrcI())
 	if p == WP && m.Dst().Row() == 7 {
 		p = WQ
 	}
@@ -97,7 +97,7 @@ func (b *Board) String() string {
 	for r := 7; r >= 0; r-- {
 		fmt.Fprint(&buf, r+1)
 		for c := 0; c < 8; c++ {
-			fmt.Fprint(&buf, " ", b.At(RC(r, c)))
+			fmt.Fprint(&buf, " ", b.At(RC(r, c).Index()))
 		}
 		fmt.Fprintln(&buf)
 	}

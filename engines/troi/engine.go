@@ -55,7 +55,7 @@ func mobility(b *Board, c Color) float64 {
 func protection(b *Board, c Color) float64 {
 	s := 0.0
 	for _, m := range AllPre(b, c) {
-		if b.At(m.Dst()).Color() == c {
+		if b.At(m.DstI()).Color() == c {
 			s++
 		}
 	}
@@ -65,7 +65,7 @@ func protection(b *Board, c Color) float64 {
 func threat(b *Board, c Color) float64 {
 	s := 0.0
 	for _, m := range AllPre(b, c) {
-		if b.At(m.Dst()).Color() == -c {
+		if b.At(m.DstI()).Color() == -c {
 			s++
 		}
 	}
@@ -121,7 +121,7 @@ func (n *Node) WithMove(m Move) *Node {
 }
 
 func (e *troi) negamax(n *Node, depth int, c Color, m Move) int {
-	if dst := n.board.At(m.Dst()); dst == WK || dst == BK {
+	if dst := n.board.At(m.DstI()); dst == WK || dst == BK {
 		return inf(-c * dst.Color())
 	}
 
@@ -142,7 +142,7 @@ func (e *troi) negamax(n *Node, depth int, c Color, m Move) int {
 
 func Heuristic3(n *Node, m Move) int {
 	NumEvals++
-	delta := -valueOf[n.board.At(m.Dst())+6]
+	delta := -valueOf[n.board.At(m.DstI())+6]
 	fast := (n.value + delta)
 	return fast
 }

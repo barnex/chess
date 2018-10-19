@@ -7,10 +7,10 @@ import (
 func MarkAllPreMoves(b *Board, typ ...Piece) {
 	for _, typ := range typ {
 		for p := RC(0, 0); p.Valid(); p = p.Next() {
-			if b.At(p) == typ {
-				fmt.Printf("pre-moves for %v%v\n", b.At(p), p)
-				var moves []Pos
-				Pre(b, p, &moves)
+			if b.At(p.Index()) == typ {
+				fmt.Printf("pre-moves for %v%v\n", b.At(p.Index()), p)
+				var moves []Index
+				Pre(b, p.Index(), &moves)
 				mark(b, moves)
 				fmt.Println()
 			}

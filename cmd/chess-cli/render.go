@@ -62,8 +62,8 @@ func Render(b *Board, mark map[Pos]bool, sideText string) {
 
 		for c := 0; c < 8; c++ {
 
-			piece := b.At(RC(r, c)).String()
-			if b.At(RC(r, c)) == 0 {
+			piece := b.At(RC(r, c).Index()).String()
+			if b.At(RC(r, c).Index()) == 0 {
 				piece = " "
 			}
 
