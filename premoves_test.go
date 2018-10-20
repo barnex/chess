@@ -1,5 +1,7 @@
 package chess
 
+/*
+
 import (
 	"fmt"
 )
@@ -428,3 +430,4 @@ func ExamplePreR() {
 	//   a b c d e f g h
 
 }
+*/

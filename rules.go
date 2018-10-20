@@ -12,23 +12,17 @@ func IsCheck(b *Board) Color {
 }
 
 func AllMoves(b *Board, c Color) []Move {
-	var moves []Move
-	pos := make([]Index, 0, 64)
+	moves := make([]Move, 0, 64)
 	for i_ := range b {
 		i := Index(i_)
 		if b.At(i).Color() == c {
-			pos = pos[:0]
-			Moves(b, i, &pos)
-			for _, dst := range pos {
-				moves = append(moves, Move{i, dst})
-			}
-
+			Moves(b, i, &moves)
 		}
 	}
 	return moves
 }
 
-func Moves(b *Board, src Index, dst *[]Index) {
+func Moves(b *Board, src Index, dst *[]Move) {
 	switch b.At(src) {
 	case 00:
 		return
@@ -53,45 +47,45 @@ func Allowed(b *Board, c Color, m Move) bool {
 	if b.At(m.SrcI()).Color() != c {
 		return false
 	}
-	var all []Index
+	var all []Move
 	Moves(b, m.src, &all)
 	for _, a := range all {
-		if m.DstI() == a {
+		if m.DstI() == a.DstI() {
 			return true
 		}
 	}
 	return false
 }
 
-func QMoves(b *Board, src Index, dst *[]Index) {
+func QMoves(b *Board, src Index, dst *[]Move) {
 	RMoves(b, src, dst)
 	BMoves(b, src, dst)
 }
 
-func RMoves(b *Board, src Index, dst *[]Index) {
+func RMoves(b *Board, src Index, dst *[]Move) {
 	march(Front, b, src, dst)
 	march(Back, b, src, dst)
 	march(Left, b, src, dst)
 	march(Right, b, src, dst)
 }
 
-func BMoves(b *Board, src Index, dst *[]Index) {
+func BMoves(b *Board, src Index, dst *[]Move) {
 	march(FrontRight, b, src, dst)
 	march(FrontLeft, b, src, dst)
 	march(BackRight, b, src, dst)
 	march(BackLeft, b, src, dst)
 }
 
-func march(d Pos, b *Board, src Index, dst *[]Index) {
+func march(d Pos, b *Board, src Index, dst *[]Move) {
 	me := b.At(src)
 	for p := src.Pos().Add(d); p.Valid(); p = p.Add(d) {
 		// empty
 		if b.At(p.Index()).Color() == 00 {
-			*dst = append(*dst, p.Index())
+			*dst = append(*dst, Move{src, p.Index()})
 		}
 		// capture
 		if b.At(p.Index()).Color() == -me.Color() {
-			*dst = append(*dst, p.Index())
+			*dst = append(*dst, Move{src, p.Index()})
 			return
 		}
 		// blocked by own
@@ -101,7 +95,7 @@ func march(d Pos, b *Board, src Index, dst *[]Index) {
 	}
 }
 
-func NMoves(b *Board, src Index, dst *[]Index) {
+func NMoves(b *Board, src Index, dst *[]Move) {
 	d := []Pos{
 		{-2, -1}, {-1, -2},
 		{+2, -1}, {+1, -2},
@@ -110,7 +104,7 @@ func NMoves(b *Board, src Index, dst *[]Index) {
 	jump(d, b, src, dst)
 }
 
-func KMoves(b *Board, src Index, dst *[]Index) {
+func KMoves(b *Board, src Index, dst *[]Move) {
 	d := []Pos{
 		{-1, -1}, {-1, 0}, {-1, 1},
 		{0, -1}, {0, 1},
@@ -119,56 +113,56 @@ func KMoves(b *Board, src Index, dst *[]Index) {
 	jump(d, b, src, dst)
 }
 
-func jump(d []Pos, b *Board, src Index, dst *[]Index) {
+func jump(d []Pos, b *Board, src Index, dst *[]Move) {
 	me := b.At(src)
 	for _, d := range d {
 		p := src.Pos().Add(d)
 		if p.Valid() && b.At(p.Index()).Color() != me.Color() {
-			*dst = append(*dst, p.Index())
+			*dst = append(*dst, Move{src, p.Index()})
 		}
 	}
 }
 
-func WPMoves(b *Board, src Index, dst *[]Index) {
+func WPMoves(b *Board, src Index, dst *[]Move) {
 	me := b.At(src)
 
 	// one row forward
 	if p := src.Pos().Add(Front); p.Valid() && b.At(p.Index()) == 00 {
-		*dst = append(*dst, p.Index())
+		*dst = append(*dst, Move{src, p.Index()})
 	}
 
 	// two rows forward
 	if p := src.Pos().Add(Pos{2, 0}); p.Row() == 3 && b.At(p.Index()) == 00 && b.At(src.Pos().Add(Front).Index()) == 00 {
-		*dst = append(*dst, p.Index())
+		*dst = append(*dst, Move{src, p.Index()})
 	}
 
 	if p := src.Pos().Add(FrontLeft); p.Valid() && b.At(p.Index()).Color() == -me.Color() {
-		*dst = append(*dst, p.Index())
+		*dst = append(*dst, Move{src, p.Index()})
 	}
 
 	if p := src.Pos().Add(FrontRight); p.Valid() && b.At(p.Index()).Color() == -me.Color() {
-		*dst = append(*dst, p.Index())
+		*dst = append(*dst, Move{src, p.Index()})
 	}
 }
 
-func BPMoves(b *Board, src Index, dst *[]Index) {
+func BPMoves(b *Board, src Index, dst *[]Move) {
 	me := b.At(src)
 
 	// one row forward
 	if p := src.Pos().Add(Back); p.Valid() && b.At(p.Index()) == 00 {
-		*dst = append(*dst, p.Index())
+		*dst = append(*dst, Move{src, p.Index()})
 	}
 
 	// two rows forward
 	if p := src.Pos().Add(Pos{-2, 0}); p.Row() == 4 && b.At(p.Index()) == 00 && b.At(src.Pos().Add(Back).Index()) == 00 {
-		*dst = append(*dst, p.Index())
+		*dst = append(*dst, Move{src, p.Index()})
 	}
 
 	if p := src.Pos().Add(BackLeft); p.Valid() && b.At(p.Index()).Color() == -me.Color() {
-		*dst = append(*dst, p.Index())
+		*dst = append(*dst, Move{src, p.Index()})
 	}
 
 	if p := src.Pos().Add(BackRight); p.Valid() && b.At(p.Index()).Color() == -me.Color() {
-		*dst = append(*dst, p.Index())
+		*dst = append(*dst, Move{src, p.Index()})
 	}
 }

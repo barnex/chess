@@ -1,6 +1,10 @@
 package picard
 
-import "github.com/barnex/chess"
+import (
+	"math"
+
+	"github.com/barnex/chess"
+)
 
 func New(depth int) chess.Engine {
 	return &Adaptor{&E{depth: depth}}
@@ -17,7 +21,6 @@ func (e *E) ValueOf(b *chess.Board, nextPlayer chess.Color) int {
 		board: *b,
 		value: MaterialValue(b),
 	}
-
 	return e.AlphaBeta(root, -nextPlayer, e.depth)
 }
 
@@ -26,39 +29,45 @@ func (e *E) AlphaBeta(n *Node, currPlayer chess.Color, depth int) int {
 		return n.value
 	}
 
-	//allMoves := e.AllMoves(n, currPlayer)
-	//defer e.Recycle(allMoves)
-	//children := e.BufferNodes()
-	//defer e.RecycleNodes(children)
-	panic("TODO")
-}
-
-func (e *E) Buffer() []chess.Move {
-	if len(e.buffers) > 0 {
-		b := e.buffers[len(e.buffers)-1]
-		b = b[:0]
-		e.buffers = e.buffers[:len(e.buffers)-1]
-		return b
+	allMoves := e.AllMoves(n, currPlayer)
+	defer e.Recycle(allMoves)
+	children := e.BufferNodes()[:len(allMoves)]
+	defer e.RecycleNodes(children)
+	for i, m := range allMoves {
+		children[i] = n.WithMove(m)
 	}
-	return make([]chess.Move, 0, 64)
-}
 
-func (e *E) Recycle(b []chess.Move) {
-	b = b[:0]
-	e.buffers = append(e.buffers, b)
-}
-
-func (e *E) BufferNodes() []Node {
-	if len(e.bufferN) > 0 {
-		b := e.bufferN[len(e.bufferN)-1]
-		b = b[:0]
-		e.bufferN = e.bufferN[:len(e.bufferN)-1]
-		return b
+	if c == White {
+		v := -inf
+		for _, c := range children {
+			v = max(v, e.AlphaBeta(c, -currPlayer, depth-1))
+		}
+		return v
+	} else {
+		v := inf
+		for _, c := range children {
+			v = min(v, e.AlphaBeta(c, -currPlayer, depth-1))
+		}
+		return v
 	}
-	return make([]Node, 0, 64)
 }
 
-func (e *E) RecycleNode(b []Node) {
-	b = b[:0]
-	e.bufferN = append(e.bufferN, b)
+const inf = math.MaxInt64()
+
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
 }
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+//func (e *Engine) AllMoves(b *Board, c Color) []Move {
+//
+//}
