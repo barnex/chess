@@ -24,10 +24,10 @@ func (e *E) BufferNodes() []Node {
 		e.bufferN = e.bufferN[:len(e.bufferN)-1]
 		return b
 	}
-	return make([]Node, 0, 64)
+	return make([]Node, 0, 128)
 }
 
-func (e *E) RecycleNode(b []Node) {
+func (e *E) RecycleNodes(b []Node) {
 	b = b[:0]
 	e.bufferN = append(e.bufferN, b)
 }

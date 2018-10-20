@@ -28,12 +28,27 @@ func TestTactical1(t *testing.T) {
 		00, 00, 00, 00, 00, 00, 00, 00,
 		00, 00, 00, 00, 00, 00, 00, 00,
 		00, 00, 00, 00, 00, BP, 00, 00,
-		00, 00, BP, 00, BK, 00, 00, 00,
-		00, 00, 00, WQ, 00, 00, 00, 00,
+		00, 00, BP, 00, BN, 00, 00, 00,
+		00, 00, 00, WB, 00, 00, 00, 00,
 		00, 00, 00, 00, 00, 00, 00, 00,
 		00, 00, 00, 00, 00, 00, 00, 00,
 	})
-	CheckBestMove(t, New(1), b, White, "Qc4")
+	CheckBestMove(t, New(1), b, White, "Bc4")
+}
+
+// Requires 1 lookahead, play as black
+func TestTactical1B(t *testing.T) {
+	b := Upright(&Board{
+		00, 00, 00, 00, 00, 00, 00, 00,
+		00, 00, 00, 00, 00, 00, 00, 00,
+		00, 00, 00, 00, 00, 00, 00, 00,
+		00, 00, 00, 00, 00, WB, 00, 00,
+		00, 00, WP, 00, WN, 00, 00, 00,
+		00, 00, 00, BB, 00, 00, 00, 00,
+		00, 00, 00, 00, 00, 00, 00, 00,
+		00, 00, 00, 00, 00, 00, 00, 00,
+	})
+	CheckBestMove(t, New(1), b, Black, "Bc4")
 }
 
 func CheckBestMove(t *testing.T, e Engine, b *Board, c Color, want string) {

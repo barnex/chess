@@ -26,7 +26,7 @@ func (a *Adaptor) Move(b *chess.Board, c chess.Color) (chess.Move, float64) {
 		bestScore = math.Inf(-1)
 	)
 	for _, m := range chess.AllMoves(b, c) {
-		s := float64(a.ValueOf(b.WithMove(m), -c))
+		s := float64(a.ValueOf(b.WithMove(m), -c)) * float64(c)
 		//log.Println(m, s)
 		if s > bestScore {
 			bestScore = s

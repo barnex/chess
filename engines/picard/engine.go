@@ -21,7 +21,7 @@ func (e *E) ValueOf(b *chess.Board, nextPlayer chess.Color) int {
 		board: *b,
 		value: MaterialValue(b),
 	}
-	return e.AlphaBeta(root, -nextPlayer, e.depth)
+	return e.AlphaBeta(root, nextPlayer, e.depth)
 }
 
 func (e *E) AlphaBeta(n *Node, currPlayer chess.Color, depth int) int {
@@ -29,30 +29,32 @@ func (e *E) AlphaBeta(n *Node, currPlayer chess.Color, depth int) int {
 		return n.value
 	}
 
-	allMoves := e.AllMoves(n, currPlayer)
+	allMoves := e.AllMoves(&n.board, currPlayer)
 	defer e.Recycle(allMoves)
+	//log.Println("allmoves", currPlayer, allMoves)
+
 	children := e.BufferNodes()[:len(allMoves)]
 	defer e.RecycleNodes(children)
 	for i, m := range allMoves {
-		children[i] = n.WithMove(m)
+		n.WithMove(&children[i], m)
 	}
 
-	if c == White {
+	if currPlayer == chess.White {
 		v := -inf
 		for _, c := range children {
-			v = max(v, e.AlphaBeta(c, -currPlayer, depth-1))
+			v = max(v, e.AlphaBeta(&c, -currPlayer, depth-1))
 		}
 		return v
 	} else {
 		v := inf
 		for _, c := range children {
-			v = min(v, e.AlphaBeta(c, -currPlayer, depth-1))
+			v = min(v, e.AlphaBeta(&c, -currPlayer, depth-1))
 		}
 		return v
 	}
 }
 
-const inf = math.MaxInt64()
+const inf = math.MaxInt64
 
 func min(a, b int) int {
 	if a < b {
@@ -68,6 +70,12 @@ func max(a, b int) int {
 	return b
 }
 
-//func (e *Engine) AllMoves(b *Board, c Color) []Move {
-//
-//}
+func (e *E) AllMoves(b *chess.Board, c chess.Color) []chess.Move {
+	moves := e.Buffer()
+	for i := range b {
+		if b.At(chess.Index(i)).Color() == c {
+			chess.Moves(b, chess.Index(i), &moves)
+		}
+	}
+	return moves
+}

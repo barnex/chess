@@ -5,9 +5,13 @@ import . "github.com/barnex/chess"
 func MaterialValue(b *Board) int {
 	v := 0
 	for _, p := range b {
-		v += valueOf[p+6]
+		v += ValueOf(p)
 	}
 	return v
+}
+
+func ValueOf(p Piece) int {
+	return valueOf[p+6]
 }
 
 var valueOf = [13]int{
