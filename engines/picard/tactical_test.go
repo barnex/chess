@@ -1,12 +1,12 @@
 package picard
 
 import (
-	"fmt"
+	"testing"
 
 	. "github.com/barnex/chess"
 )
 
-func ExampleTactical_1() {
+func TestTactical0(t *testing.T) {
 	b := Upright(&Board{
 		00, 00, 00, 00, 00, 00, 00, 00,
 		00, 00, 00, 00, 00, 00, 00, 00,
@@ -18,26 +18,15 @@ func ExampleTactical_1() {
 		00, 00, 00, 00, 00, 00, 00, 00,
 	})
 
-	e := New(0)
-	PrintBestMove(e, b, White)
-
-	//Output:
-	// 8 · · · · · · · ·
-	// 7 · · · · · · · ·
-	// 6 · · · · · · · ·
-	// 5 · · · · · · · ·
-	// 4 · · ♟ · ♛ · · ·
-	// 3 · · · ♙ · · · ·
-	// 2 · · · · · · · ·
-	// 1 · · · · · · · ·
-	//   a b c d e f g h
-	// d3e4
+	CheckBestMove(t, New(0), b, White, "e4")
 
 }
 
-func PrintBestMove(e Engine, b *Board, c Color) {
-	fmt.Println(b)
-
+func CheckBestMove(t *testing.T, e Engine, b *Board, c Color, want string) {
+	t.Helper()
 	m, _ := e.Move(b, c)
-	fmt.Println(m)
+	w := MustParse(want, b, c)
+	if m != w {
+		t.Errorf("%v: have: %v, want: %v\n%v", c, m, w, b)
+	}
 }
