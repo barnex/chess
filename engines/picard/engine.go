@@ -7,7 +7,7 @@ import (
 )
 
 func New(depth int) chess.Engine {
-	return &Adaptor{&E{depth: depth}}
+	return &E{depth: depth}
 }
 
 type E struct {
@@ -16,23 +16,23 @@ type E struct {
 	bufferN [][]Node
 }
 
-// TODO: also return move
-func (e *E) ValueOf(b *chess.Board, nextPlayer chess.Color) int {
+func (e *E) Move(b *chess.Board, c chess.Color) (chess.Move, float64) {
 	root := &Node{
 		board: *b,
 		value: MaterialValue(b),
 	}
-	return e.AlphaBeta(root, nextPlayer, e.depth)
+	m, s := e.AlphaBeta(root, c, e.depth)
+	return m, float64(s)
 }
 
 // TODO: also return move
-func (e *E) AlphaBeta(n *Node, currPlayer chess.Color, depth int) int {
+func (e *E) AlphaBeta(n *Node, currPlayer chess.Color, depth int) (chess.Move, int) {
 	if depth == 0 {
-		return n.value
+		return chess.Move{}, n.value
 	}
 
 	if n.KingTaken() {
-		return n.value
+		return chess.Move{}, n.value
 	}
 
 	allMoves := e.AllMoves(&n.board, currPlayer)
@@ -46,17 +46,27 @@ func (e *E) AlphaBeta(n *Node, currPlayer chess.Color, depth int) int {
 	}
 
 	if currPlayer == chess.White {
-		v := -inf
-		for _, c := range children {
-			v = max(v, e.AlphaBeta(&c, -currPlayer, depth-1))
+		bv := -inf
+		bm := chess.Move{}
+		for i, c := range children {
+			_, v := e.AlphaBeta(&c, -currPlayer, depth-1)
+			if v > bv {
+				bv = v
+				bm = allMoves[i]
+			}
 		}
-		return v
+		return bm, bv
 	} else {
-		v := inf
-		for _, c := range children {
-			v = min(v, e.AlphaBeta(&c, -currPlayer, depth-1))
+		bv := inf
+		bm := chess.Move{}
+		for i, c := range children {
+			_, v := e.AlphaBeta(&c, -currPlayer, depth-1)
+			if v < bv {
+				bv = v
+				bm = allMoves[i]
+			}
 		}
-		return v
+		return bm, bv
 	}
 }
 

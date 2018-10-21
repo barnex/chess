@@ -18,7 +18,7 @@ func TestTactical0(t *testing.T) {
 		00, 00, 00, 00, 00, 00, 00, 00,
 		00, 00, 00, 00, 00, 00, 00, 00,
 	})
-	CheckBestMove(t, New(0), b, White, "e4")
+	CheckBestMove(t, New(1), b, White, "e4")
 }
 
 // Requires 1 lookahead.
@@ -33,7 +33,7 @@ func TestTactical1(t *testing.T) {
 		00, 00, 00, 00, 00, 00, 00, 00,
 		00, 00, 00, 00, 00, 00, 00, 00,
 	})
-	CheckBestMove(t, New(1), b, White, "Bc4")
+	CheckBestMove(t, New(2), b, White, "Bc4")
 }
 
 // Requires 1 lookahead, play as black
@@ -48,7 +48,7 @@ func TestTactical1B(t *testing.T) {
 		00, 00, 00, 00, 00, 00, 00, 00,
 		00, 00, 00, 00, 00, 00, 00, 00,
 	})
-	CheckBestMove(t, New(1), b, Black, "Bc4")
+	CheckBestMove(t, New(2), b, Black, "Bc4")
 }
 
 // White must capture the black king.
@@ -65,7 +65,7 @@ func TestTacticalTakeTheKing(t *testing.T) {
 		00, 00, 00, 00, 00, 00, 00, 00,
 		00, 00, 00, 00, 00, 00, 00, 00,
 	})
-	CheckBestMove(t, New(1), b, White, "Qc8")
+	CheckBestMove(t, New(2), b, White, "Qc8")
 }
 
 func CheckBestMove(t *testing.T, e Engine, b *Board, c Color, want string) {
