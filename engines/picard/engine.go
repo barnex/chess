@@ -1,6 +1,7 @@
 package picard
 
 import (
+	"fmt"
 	"math"
 	"sort"
 
@@ -57,7 +58,10 @@ func (e *E) AlphaBeta(n *Node, currPlayer chess.Color, depth int, alpha, beta in
 	}
 
 	if currPlayer == chess.White {
-		sort.Sort(descending(children))
+		//pr(children)
+		sort.Sort(ascending(children))
+		//fmt.Print("->")
+		//pr(children)
 		bv := -inf
 		bm := chess.Move{}
 		for _, c := range children {
@@ -75,7 +79,7 @@ func (e *E) AlphaBeta(n *Node, currPlayer chess.Color, depth int, alpha, beta in
 		}
 		return bm, bv
 	} else {
-		sort.Sort(ascending(children))
+		sort.Sort(descending(children))
 		bv := inf
 		bm := chess.Move{}
 		for _, c := range children {
@@ -92,6 +96,13 @@ func (e *E) AlphaBeta(n *Node, currPlayer chess.Color, depth int, alpha, beta in
 		}
 		return bm, bv
 	}
+}
+
+func pr(ch []Node) {
+	for _, c := range ch {
+		fmt.Print(c.value, " ")
+	}
+	fmt.Println()
 }
 
 type ascending []Node
