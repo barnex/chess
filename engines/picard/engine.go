@@ -1,7 +1,6 @@
 package picard
 
 import (
-	"fmt"
 	"math"
 	"sort"
 
@@ -48,7 +47,6 @@ func (e *E) AlphaBeta(n *Node, currPlayer chess.Color, depth int, alpha, beta in
 
 	allMoves := e.AllMoves(&n.board, currPlayer)
 	defer e.Recycle(allMoves)
-	//log.Println("allmoves", currPlayer, allMoves)
 
 	children := e.BufferNodes()[:len(allMoves)]
 	defer e.RecycleNodes(children)
@@ -58,10 +56,9 @@ func (e *E) AlphaBeta(n *Node, currPlayer chess.Color, depth int, alpha, beta in
 	}
 
 	if currPlayer == chess.White {
-		//pr(children)
-		sort.Sort(ascending(children))
-		//fmt.Print("->")
-		//pr(children)
+		if depth > 1 {
+			sort.Sort(ascending(children))
+		}
 		bv := -inf
 		bm := chess.Move{}
 		for _, c := range children {
@@ -79,7 +76,9 @@ func (e *E) AlphaBeta(n *Node, currPlayer chess.Color, depth int, alpha, beta in
 		}
 		return bm, bv
 	} else {
-		sort.Sort(descending(children))
+		if depth > 1 {
+			sort.Sort(descending(children))
+		}
 		bv := inf
 		bm := chess.Move{}
 		for _, c := range children {
@@ -96,13 +95,6 @@ func (e *E) AlphaBeta(n *Node, currPlayer chess.Color, depth int, alpha, beta in
 		}
 		return bm, bv
 	}
-}
-
-func pr(ch []Node) {
-	for _, c := range ch {
-		fmt.Print(c.value, " ")
-	}
-	fmt.Println()
 }
 
 type ascending []Node
