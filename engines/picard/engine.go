@@ -21,12 +21,12 @@ func (e *E) Move(b *chess.Board, c chess.Color) (chess.Move, float64) {
 		board: *b,
 		value: MaterialValue(b),
 	}
-	m, s := e.AlphaBeta(root, c, e.depth)
+	m, s := e.AlphaBeta(root, c, e.depth, -inf, inf)
 	return m, float64(s)
 }
 
 // TODO: also return move
-func (e *E) AlphaBeta(n *Node, currPlayer chess.Color, depth int) (chess.Move, int) {
+func (e *E) AlphaBeta(n *Node, currPlayer chess.Color, depth int, alpha, beta int) (chess.Move, int) {
 	if depth == 0 {
 		return chess.Move{}, n.value
 	}
@@ -43,27 +43,37 @@ func (e *E) AlphaBeta(n *Node, currPlayer chess.Color, depth int) (chess.Move, i
 	defer e.RecycleNodes(children)
 	for i, m := range allMoves {
 		n.WithMove(&children[i], m)
+		chess.NumEvals++
 	}
 
 	if currPlayer == chess.White {
 		bv := -inf
 		bm := chess.Move{}
 		for i, c := range children {
-			_, v := e.AlphaBeta(&c, -currPlayer, depth-1)
+			_, v := e.AlphaBeta(&c, -currPlayer, depth-1, alpha, beta)
 			if v > bv {
 				bv = v
 				bm = allMoves[i]
 			}
+			alpha = max(alpha, bv)
+			if alpha >= beta {
+				break
+			}
+
 		}
 		return bm, bv
 	} else {
 		bv := inf
 		bm := chess.Move{}
 		for i, c := range children {
-			_, v := e.AlphaBeta(&c, -currPlayer, depth-1)
+			_, v := e.AlphaBeta(&c, -currPlayer, depth-1, alpha, beta)
 			if v < bv {
 				bv = v
 				bm = allMoves[i]
+			}
+			beta = min(beta, bv)
+			if alpha >= beta {
+				break
 			}
 		}
 		return bm, bv

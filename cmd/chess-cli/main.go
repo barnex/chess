@@ -22,6 +22,7 @@ import (
 	"time"
 
 	. "github.com/barnex/chess"
+	"github.com/barnex/chess/engines/picard"
 	"github.com/barnex/chess/engines/riker"
 	"github.com/barnex/chess/engines/tarr"
 	"github.com/barnex/chess/engines/troi"
@@ -36,10 +37,11 @@ var (
 )
 
 var engines = map[string]func() Engine{
-	"tarr":  func() Engine { return tarr.New(tarr.Heuristic2) },
-	"riker": func() Engine { return riker.New(*flagD) },
-	"worf":  func() Engine { return worf.New(*flagD) },
-	"troi":  func() Engine { return troi.New(*flagD) },
+	"tarr":   func() Engine { return tarr.New(tarr.Heuristic2) },
+	"riker":  func() Engine { return riker.New(*flagD - 1) },
+	"worf":   func() Engine { return worf.New(*flagD - 1) },
+	"troi":   func() Engine { return troi.New(*flagD - 1) },
+	"picard": func() Engine { return picard.New(*flagD) },
 }
 
 var (
