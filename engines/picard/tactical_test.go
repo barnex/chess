@@ -68,6 +68,21 @@ func TestTacticalTakeTheKing(t *testing.T) {
 	CheckBestMove(t, New(2), b, White, "Qc8")
 }
 
+func TestTacticalPromotion(t *testing.T) {
+	t.Skip("TODO")
+	b := Upright(&Board{
+		00, 00, 00, 00, 00, 00, 00, 00,
+		00, 00, BP, 00, 00, 00, WP, 00,
+		00, WP, 00, 00, 00, 00, 00, 00,
+		00, 00, 00, 00, 00, 00, 00, 00,
+		00, 00, 00, 00, 00, 00, 00, 00,
+		00, 00, 00, 00, 00, 00, 00, 00,
+		00, 00, 00, 00, 00, 00, 00, 00,
+		00, 00, 00, 00, 00, 00, 00, 00,
+	})
+	CheckBestMove(t, New(2), b, White, "g8")
+}
+
 func CheckBestMove(t *testing.T, e Engine, b *Board, c Color, want string) {
 	t.Helper()
 	m, _ := e.Move(b, c)
