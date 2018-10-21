@@ -16,6 +16,7 @@ type E struct {
 	bufferN [][]Node
 }
 
+// TODO: also return move
 func (e *E) ValueOf(b *chess.Board, nextPlayer chess.Color) int {
 	root := &Node{
 		board: *b,
@@ -24,8 +25,13 @@ func (e *E) ValueOf(b *chess.Board, nextPlayer chess.Color) int {
 	return e.AlphaBeta(root, nextPlayer, e.depth)
 }
 
+// TODO: also return move
 func (e *E) AlphaBeta(n *Node, currPlayer chess.Color, depth int) int {
 	if depth == 0 {
+		return n.value
+	}
+
+	if n.KingTaken() {
 		return n.value
 	}
 
