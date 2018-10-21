@@ -2,6 +2,7 @@ package picard
 
 import (
 	"math"
+	"sort"
 
 	"github.com/barnex/chess"
 )
@@ -16,12 +17,21 @@ type E struct {
 	bufferN [][]Node
 }
 
+var (
+	alphaCutoffs, betaCutoffs int
+)
+
 func (e *E) Move(b *chess.Board, c chess.Color) (chess.Move, float64) {
+	alphaCutoffs = 0
+	betaCutoffs = 0
+
 	root := &Node{
 		board: *b,
 		value: MaterialValue(b),
 	}
 	m, s := e.AlphaBeta(root, c, e.depth, -inf, inf)
+	//log.Println("alpha cuttoffs:", alphaCutoffs)
+	//log.Println("beta cuttoffs:", betaCutoffs)
 	return m, float64(s)
 }
 
@@ -47,38 +57,52 @@ func (e *E) AlphaBeta(n *Node, currPlayer chess.Color, depth int, alpha, beta in
 	}
 
 	if currPlayer == chess.White {
+		sort.Sort(descending(children))
 		bv := -inf
 		bm := chess.Move{}
-		for i, c := range children {
+		for _, c := range children {
 			_, v := e.AlphaBeta(&c, -currPlayer, depth-1, alpha, beta)
 			if v > bv {
 				bv = v
-				bm = allMoves[i]
+				bm = c.move
 			}
 			alpha = max(alpha, bv)
 			if alpha >= beta {
+				alphaCutoffs++
 				break
 			}
 
 		}
 		return bm, bv
 	} else {
+		sort.Sort(ascending(children))
 		bv := inf
 		bm := chess.Move{}
-		for i, c := range children {
+		for _, c := range children {
 			_, v := e.AlphaBeta(&c, -currPlayer, depth-1, alpha, beta)
 			if v < bv {
 				bv = v
-				bm = allMoves[i]
+				bm = c.move
 			}
 			beta = min(beta, bv)
 			if alpha >= beta {
+				betaCutoffs++
 				break
 			}
 		}
 		return bm, bv
 	}
 }
+
+type ascending []Node
+type descending []Node
+
+func (c ascending) Len() int            { return len(c) }
+func (c descending) Len() int           { return len(c) }
+func (c ascending) Swap(i, j int)       { c[i], c[j] = c[j], c[i] }
+func (c descending) Swap(i, j int)      { c[i], c[j] = c[j], c[i] }
+func (c ascending) Less(i, j int) bool  { return c[i].value < c[j].value }
+func (c descending) Less(i, j int) bool { return c[i].value > c[j].value }
 
 const inf = math.MaxInt64
 

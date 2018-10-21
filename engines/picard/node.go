@@ -5,6 +5,7 @@ import "github.com/barnex/chess"
 type Node struct {
 	board chess.Board
 	value int
+	move  chess.Move
 }
 
 func (n *Node) WithMove(dst *Node, m chess.Move) {
@@ -13,6 +14,7 @@ func (n *Node) WithMove(dst *Node, m chess.Move) {
 	dst.board = n.board
 	dst.board[m.SrcI()] = 00
 	dst.board[m.DstI()] = n.board[m.SrcI()]
+	dst.move = m
 }
 
 func (n *Node) KingTaken() bool {

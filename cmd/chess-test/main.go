@@ -13,8 +13,8 @@ import (
 
 func main() {
 
-	engineA := worf.New(1)
-	engineB := picard.New(2)
+	engineA := worf.New(2)
+	engineB := picard.New(4)
 
 	var (
 		totalMoves int
