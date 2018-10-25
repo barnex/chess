@@ -8,13 +8,13 @@ import (
 
 	"github.com/barnex/chess"
 	"github.com/barnex/chess/engines/picard"
-	"github.com/barnex/chess/engines/worf"
 )
 
 func main() {
 
-	engineA := worf.New(2)
-	engineB := picard.New(4)
+	engineA := picard.New(2)
+	engineB := picard.New(2)
+	engineB.(*picard.E).Weight[0] = 0.001
 
 	var (
 		totalMoves int

@@ -9,7 +9,7 @@ import (
 )
 
 func BenchmarkDepthGame4(b *testing.B) {
-	e := New(6)
+	e := New(4)
 	r := random.New()
 	for i := 0; i < b.N; i++ {
 		b := chess.NewBoard()

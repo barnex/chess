@@ -16,7 +16,3 @@ func (n *Node) WithMove(dst *Node, m chess.Move) {
 	dst.board[m.DstI()] = n.board[m.SrcI()]
 	dst.move = m
 }
-
-func (n *Node) KingTaken() bool {
-	return n.value > 500 || n.value < -500
-}

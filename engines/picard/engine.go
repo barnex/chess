@@ -2,6 +2,7 @@ package picard
 
 import (
 	"math"
+	"math/rand"
 	"sort"
 
 	"github.com/barnex/chess"
@@ -11,10 +12,16 @@ func New(depth int) chess.Engine {
 	return &E{depth: depth}
 }
 
+func NewOpts(depth int, enableRandom bool) *E {
+	return &E{depth: depth, EnableRandom: enableRandom}
+}
+
 type E struct {
-	depth   int
-	buffers [][]chess.Move
-	bufferN [][]Node
+	depth        int
+	buffers      [][]chess.Move
+	bufferN      [][]Node
+	EnableRandom bool
+	Weight       [1]float64
 }
 
 var (
@@ -30,19 +37,16 @@ func (e *E) Move(b *chess.Board, c chess.Color) (chess.Move, float64) {
 		value: MaterialValue(b),
 	}
 	m, s := e.AlphaBeta(root, c, e.depth, -inf, inf)
-	//log.Println("alpha cuttoffs:", alphaCutoffs)
-	//log.Println("beta cuttoffs:", betaCutoffs)
 	return m, float64(s)
 }
 
-// TODO: also return move
-func (e *E) AlphaBeta(n *Node, currPlayer chess.Color, depth int, alpha, beta int) (chess.Move, int) {
+func (e *E) AlphaBeta(n *Node, currPlayer chess.Color, depth int, alpha, beta float64) (chess.Move, float64) {
 	if depth == 0 {
-		return chess.Move{}, n.value
+		return chess.Move{}, float64(n.value)
 	}
 
 	if n.KingTaken() {
-		return chess.Move{}, n.value
+		return chess.Move{}, float64(n.value)
 	}
 
 	allMoves := e.AllMoves(&n.board, currPlayer)
@@ -55,14 +59,17 @@ func (e *E) AlphaBeta(n *Node, currPlayer chess.Color, depth int, alpha, beta in
 		chess.NumEvals++
 	}
 
+	bv := math.NaN()
+	bm := chess.Move{}
 	if currPlayer == chess.White {
 		if depth > 1 {
 			sort.Sort(ascending(children))
 		}
-		bv := -inf
-		bm := chess.Move{}
+		bv = -inf
+		bm = chess.Move{}
 		for _, c := range children {
 			_, v := e.AlphaBeta(&c, -currPlayer, depth-1, alpha, beta)
+			//v += rand.Float64() / 1024
 			if v > bv {
 				bv = v
 				bm = c.move
@@ -74,15 +81,15 @@ func (e *E) AlphaBeta(n *Node, currPlayer chess.Color, depth int, alpha, beta in
 			}
 
 		}
-		return bm, bv
 	} else {
 		if depth > 1 {
 			sort.Sort(descending(children))
 		}
-		bv := inf
-		bm := chess.Move{}
+		bv = inf
+		bm = chess.Move{}
 		for _, c := range children {
 			_, v := e.AlphaBeta(&c, -currPlayer, depth-1, alpha, beta)
+			//v += rand.Float64() / 1024
 			if v < bv {
 				bv = v
 				bm = c.move
@@ -93,8 +100,16 @@ func (e *E) AlphaBeta(n *Node, currPlayer chess.Color, depth int, alpha, beta in
 				break
 			}
 		}
-		return bm, bv
 	}
+	if depth == e.depth-1 {
+		if e.EnableRandom {
+			bv += rand.Float64() / (1024 * 1024) // TODO: add strategical
+		}
+		if e.Weight != [1]float64{} {
+			bv += e.Strategic(&n.board)
+		}
+	}
+	return bm, bv
 }
 
 type ascending []Node
@@ -107,16 +122,16 @@ func (c descending) Swap(i, j int)      { c[i], c[j] = c[j], c[i] }
 func (c ascending) Less(i, j int) bool  { return c[i].value < c[j].value }
 func (c descending) Less(i, j int) bool { return c[i].value > c[j].value }
 
-const inf = math.MaxInt64
+var inf = math.Inf(1)
 
-func min(a, b int) int {
+func min(a, b float64) float64 {
 	if a < b {
 		return a
 	}
 	return b
 }
 
-func max(a, b int) int {
+func max(a, b float64) float64 {
 	if a > b {
 		return a
 	}

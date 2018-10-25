@@ -85,9 +85,9 @@ func TestTacticalPromotion(t *testing.T) {
 
 func CheckBestMove(t *testing.T, e Engine, b *Board, c Color, want string) {
 	t.Helper()
-	m, _ := e.Move(b, c)
+	m, s := e.Move(b, c)
 	w := MustParse(want, b, c)
 	if m != w {
-		t.Errorf("%v: have: %v, want: %v\n%v", c, m, w, b)
+		t.Errorf("%v: have: %v (score %v), want: %v\n%v", c, m, s, w, b)
 	}
 }

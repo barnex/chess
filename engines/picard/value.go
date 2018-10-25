@@ -10,6 +10,10 @@ func MaterialValue(b *Board) int {
 	return v
 }
 
+func (n *Node) KingTaken() bool {
+	return n.value > 100 || n.value < -100
+}
+
 func ValueOf(p Piece) int {
 	return valueOf[p+6]
 }
@@ -27,8 +31,8 @@ var valueOf = [13]int{
 	WR + 6: 5,
 	BR + 6: -5,
 
-	WQ + 6: 10,
-	BQ + 6: -10,
+	WQ + 6: 9,
+	BQ + 6: -9,
 
 	WK + 6: 1000,
 	BK + 6: -1000,
