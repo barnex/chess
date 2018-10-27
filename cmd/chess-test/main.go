@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"math"
+	"math/rand"
+	"time"
 
 	"github.com/barnex/chess"
 	"github.com/barnex/chess/engines/picard"
@@ -12,9 +14,14 @@ import (
 
 func main() {
 
-	engineA := picard.New(2)
-	engineB := picard.New(2)
-	engineB.(*picard.E).Weight[0] = 0.001
+	rand.Seed(time.Now().UnixNano())
+
+	engineA := picard.NewOpts(3, true)
+	engineB := picard.NewOpts(3, true)
+
+	engineB.Weight[0] = 0.001
+	engineB.Weight[1] = 0.002
+	engineB.Weight[2] = 0.001
 
 	var (
 		totalMoves int

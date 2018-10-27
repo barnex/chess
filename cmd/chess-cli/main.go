@@ -31,7 +31,7 @@ import (
 
 var (
 	flagD = flag.Int("d", 2, "depth")
-	flagE = flag.String("e", "worf", "opponent: tarr|riker|worf|troi")
+	flagE = flag.String("e", "picard", "opponent: tarr|riker|worf|troi|picard")
 	flagV = flag.Bool("v", false, "verbose output")
 	flagB = flag.Bool("b", false, "play as black")
 )
