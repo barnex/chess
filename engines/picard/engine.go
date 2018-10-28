@@ -9,7 +9,7 @@ import (
 )
 
 func New(depth int) chess.Engine {
-	return &E{depth: depth, EnableRandom: true, Weight: [3]float64{0.001, 0.002, 0.001}}
+	return &E{depth: depth, EnableRandom: true} //, Weight: [3]float64{0.001, 0.002, 0.001}}
 }
 
 func NewOpts(depth int, enableRandom bool) *E {
@@ -54,17 +54,22 @@ func (e *E) Move(b *chess.Board, c chess.Color) (chess.Move, float64) {
 }
 
 func (e *E) AlphaBeta(n *Node, currPlayer chess.Color, depth int, alpha, beta float64) (chess.Move, float64) {
+
+	// reached end of recursion
 	if depth == 0 {
 		return chess.Move{}, float64(n.value)
 	}
 
+	// If the king has been captured, the rest of the tree must not
+	// be evaluated further. Otherwise, we might capture the opposing
+	// king back and consider this a zero-value move.
 	if n.KingTaken() {
 		return chess.Move{}, float64(n.value)
 	}
 
+	// Construct all possible moves
 	allMoves := e.AllMoves(&n.board, currPlayer)
 	defer e.Recycle(allMoves)
-
 	children := e.BufferNodes()[:len(allMoves)]
 	defer e.RecycleNodes(children)
 	for i, m := range allMoves {
@@ -72,48 +77,39 @@ func (e *E) AlphaBeta(n *Node, currPlayer chess.Color, depth int, alpha, beta fl
 		chess.NumEvals++
 	}
 
-	bv := math.NaN()
-	bm := chess.Move{}
-	if currPlayer == chess.White {
-		if depth > 1 {
+	// Sort the most promising moves first,
+	// to get more alpha-beta cut-offs.
+	// But only do so near the top of the tree.
+	// Benchmarks show the sorting cost is not
+	// payed back near the bottom of the tree.
+	if depth > 1 {
+		if currPlayer == chess.White {
 			sort.Sort(ascending(children))
-		}
-		bv = -inf
-		bm = chess.Move{}
-		for _, c := range children {
-			_, v := e.AlphaBeta(&c, -currPlayer, depth-1, alpha, beta)
-			//v += rand.Float64() / 1024
-			if v > bv {
-				bv = v
-				bm = c.move
-			}
-			alpha = max(alpha, bv)
-			if alpha >= beta {
-				alphaCutoffs++
-				break
-			}
-
-		}
-	} else {
-		if depth > 1 {
+		} else {
 			sort.Sort(descending(children))
 		}
-		bv = inf
-		bm = chess.Move{}
-		for _, c := range children {
-			_, v := e.AlphaBeta(&c, -currPlayer, depth-1, alpha, beta)
-			//v += rand.Float64() / 1024
-			if v < bv {
-				bv = v
-				bm = c.move
-			}
-			beta = min(beta, bv)
-			if alpha >= beta {
-				betaCutoffs++
-				break
-			}
+	}
+
+	// Negamax with alpha-beta pruning
+	bv := math.NaN()
+	bm := chess.Move{}
+
+	c := float64(currPlayer)
+	bv = -inf * c
+	bm = chess.Move{}
+	for _, ch := range children {
+		_, v := e.AlphaBeta(&ch, -currPlayer, depth-1, alpha, beta)
+		if v*c > bv*c {
+			bv = v
+			bm = ch.move
+		}
+		alpha = c * max(c*alpha, c*bv)
+		if alpha >= beta {
+			alphaCutoffs++
+			break
 		}
 	}
+
 	return bm, bv
 }
 

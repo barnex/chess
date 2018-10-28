@@ -22,7 +22,7 @@ func (e *worf) Move(b *Board, c Color) (Move, float64) {
 	)
 	for _, m := range AllMoves(b, c) {
 		n := &Node{*b, Heuristic2(b, m)}
-		s := float64(e.negamax(n, e.depth, c, m)) + e.noise() //break ties
+		s := float64(e.negamax(n, e.depth-1, c, m)) + e.noise() //break ties
 		if s > bestScore {
 			bestScore = s
 			bestMove = m

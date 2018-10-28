@@ -10,18 +10,20 @@ import (
 
 	"github.com/barnex/chess"
 	"github.com/barnex/chess/engines/picard"
+	"github.com/barnex/chess/engines/worf"
 )
 
 func main() {
 
 	rand.Seed(time.Now().UnixNano())
 
-	engineA := picard.NewOpts(3, true)
-	engineB := picard.NewOpts(3, true)
+	engineA := worf.New(2)
+	//engineA := picard.NewOpts(3, true)
+	engineB := picard.New(2)
 
-	engineB.Weight[0] = 0.001
-	engineB.Weight[1] = 0.002
-	engineB.Weight[2] = 0.001
+	//engineB.Weight[0] = 0.001
+	//engineB.Weight[1] = 0.002
+	//engineB.Weight[2] = 0.001
 
 	var (
 		totalMoves int

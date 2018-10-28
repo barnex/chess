@@ -20,7 +20,7 @@ func (e *troi) Move(b *Board, c Color) (Move, float64) {
 	var allScores []ms
 	for _, m := range AllMoves(b, c) {
 		n := &Node{*b, Heuristic2(b, m)}
-		s := float64(e.negamax(n, e.depth, c, m))
+		s := float64(e.negamax(n, e.depth-1, c, m))
 		allScores = append(allScores, ms{m, s})
 		if s > bestScore {
 			bestScore = s
