@@ -19,7 +19,7 @@ func TestMobility(t *testing.T) {
 		00, 00, WP, WP, WP, WP, WP, 00,
 		00, 00, WN, WB, WQ, WB, WN, 00,
 	})
-	e := NewOpts(2, false)
+	e := NewOpts(2)
 	e.Weight[0] = 0.001
 	CheckBestMove(t, e, b, White, "e4")
 }
@@ -36,7 +36,7 @@ func TestProtection(t *testing.T) {
 		00, 00, WP, WP, WP, 00, 00, 00,
 		00, 00, 00, 00, 00, 00, 00, 00,
 	})
-	e := NewOpts(2, false)
+	e := NewOpts(2)
 	e.Weight[1] = 0.001
 	CheckBestMove(t, e, b, White, "d3")
 }

@@ -17,6 +17,8 @@ func (e *E) Strategic(b *chess.Board) float64 {
 	allB := chess.AllPre(b, chess.Black)
 	all := append(allW, allB...)
 
+	var isProtected [64]bool
+
 	for _, m := range all {
 		src := b.At(m.SrcI())
 		dst := b.At(m.DstI())
@@ -27,6 +29,11 @@ func (e *E) Strategic(b *chess.Board) float64 {
 		}
 		if dstC == srcC && abs(ValueOf(dst)) < 10 {
 			protection += float64(srcC)
+			if !isProtected[m.DstI()] {
+				protection += float64(srcC)
+			}
+			isProtected[m.DstI()] = true // do not double-count protection
+
 		}
 		if dstC == -srcC {
 			threat -= float64(ValueOf(dst))

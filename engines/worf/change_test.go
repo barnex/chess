@@ -1,11 +1,6 @@
 package worf
 
-import (
-	"fmt"
-
-	"github.com/barnex/chess"
-)
-
+/*
 func ExampleChange() {
 	b := chess.NewBoard()
 
@@ -31,3 +26,4 @@ func ExampleChange() {
 	// 1 · · ♗ · · ♔ · ♖
 	//   a b c d e f g h
 }
+*/

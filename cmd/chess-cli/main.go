@@ -37,11 +37,16 @@ var (
 )
 
 var engines = map[string]func() Engine{
-	"tarr":   func() Engine { return tarr.New(tarr.Heuristic2) },
-	"riker":  func() Engine { return riker.New(*flagD - 1) },
-	"worf":   func() Engine { return worf.New(*flagD - 1) },
-	"troi":   func() Engine { return troi.New(*flagD - 1) },
-	"picard": func() Engine { return picard.New(*flagD) },
+	"tarr":  func() Engine { return tarr.New(tarr.Heuristic2) },
+	"riker": func() Engine { return riker.New(*flagD - 1) },
+	"worf":  func() Engine { return worf.New(*flagD - 1) },
+	"troi":  func() Engine { return troi.New(*flagD - 1) },
+	"picard": func() Engine {
+		e := picard.NewOpts(*flagD)
+		e.Weight[0] = 0.001
+		e.Weight[1] = 0.002
+		return e
+	},
 }
 
 var (

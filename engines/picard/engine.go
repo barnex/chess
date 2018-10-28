@@ -9,11 +9,11 @@ import (
 )
 
 func New(depth int) chess.Engine {
-	return &E{depth: depth, EnableRandom: true} //, Weight: [3]float64{0.001, 0.002, 0.001}}
+	return &E{depth: depth, EnableRandom: true, Weight: [4]float64{0.001, 0.005, 0.0, 0.0005}}
 }
 
-func NewOpts(depth int, enableRandom bool) *E {
-	return &E{depth: depth, EnableRandom: enableRandom}
+func NewOpts(depth int) *E {
+	return &E{depth: depth, EnableRandom: true}
 }
 
 type E struct {
@@ -21,7 +21,7 @@ type E struct {
 	buffers      [][]chess.Move
 	bufferN      [][]Node
 	EnableRandom bool
-	Weight       [3]float64
+	Weight       [4]float64
 }
 
 var (
@@ -43,8 +43,7 @@ func (e *E) Move(b *chess.Board, c chess.Color) (chess.Move, float64) {
 			value: MaterialValue(b),
 		}
 		_, v := e.AlphaBeta(root, -c, e.depth-1, bv, inf)
-		v += rand.Float64() / 1e9
-		v += e.Strategic(b)
+		v += rand.Float64() / (1024 * 1024 * 1024)
 		if v*float64(c) > bv {
 			bm = m
 			bv = v * float64(c)
@@ -97,18 +96,37 @@ func (e *E) AlphaBeta(n *Node, currPlayer chess.Color, depth int, alpha, beta fl
 	c := float64(currPlayer)
 	bv = -inf * c
 	bm = chess.Move{}
+	//nonForced := 0
 	for _, ch := range children {
 		_, v := e.AlphaBeta(&ch, -currPlayer, depth-1, alpha, beta)
+
+		if depth == e.depth-1 {
+			v += e.Strategic(&ch.board)
+		}
+
 		if v*c > bv*c {
 			bv = v
 			bm = ch.move
 		}
+
+		//if depth == 1 {
+		//	if v*c >= c*float64(n.value) {
+		//		nonForced++
+		//	}
+		//}
+
 		alpha = c * max(c*alpha, c*bv)
 		if alpha >= beta {
 			alphaCutoffs++
 			break
 		}
 	}
+
+	//if nonForced != 0 {
+	//	//fmt.Println(nonForced)
+	//	bv += float64(currPlayer) * float64(nonForced) * e.Weight[3]
+	//	//bv += float64(nonForced) / 1024
+	//}
 
 	return bm, bv
 }
