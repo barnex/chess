@@ -12,7 +12,7 @@ import (
 )
 
 func New() *E {
-	return &E{depth: 4, EnableRandom: true}
+	return &E{depth: 4, EnableRandom: true, Weight: [2]float64{0.001, 0.002}}
 }
 
 type E struct {
@@ -21,7 +21,6 @@ type E struct {
 	bufferN      [][]Node
 	EnableRandom bool
 	Weight       [2]float64
-	mu           sync.Mutex
 }
 
 var (
@@ -58,6 +57,10 @@ func (e *E) Move(b *chess.Board, c chess.Color) (chess.Move, float64) {
 		wg.Add(1)
 		go func(i int) {
 			defer wg.Done()
+			e1 := e
+			e := New()
+			e.Weight = e1.Weight
+			e.depth = e1.depth
 			b := b.WithMove(mv[i].Move)
 			root := &Node{board: *b, value: MaterialValue(b)}
 			_, v := e.AlphaBeta(root, -c, 5, -inf, inf)

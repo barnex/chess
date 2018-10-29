@@ -3,8 +3,6 @@ package crusher
 import "github.com/barnex/chess"
 
 func (e *E) Buffer() []chess.Move {
-	e.mu.Lock()
-	defer e.mu.Unlock()
 	if len(e.buffers) > 0 {
 		b := e.buffers[len(e.buffers)-1]
 		b = b[:0]
@@ -15,15 +13,11 @@ func (e *E) Buffer() []chess.Move {
 }
 
 func (e *E) Recycle(b []chess.Move) {
-	e.mu.Lock()
-	defer e.mu.Unlock()
 	b = b[:0]
 	e.buffers = append(e.buffers, b)
 }
 
 func (e *E) BufferNodes() []Node {
-	e.mu.Lock()
-	defer e.mu.Unlock()
 	if len(e.bufferN) > 0 {
 		b := e.bufferN[len(e.bufferN)-1]
 		b = b[:0]
@@ -34,8 +28,6 @@ func (e *E) BufferNodes() []Node {
 }
 
 func (e *E) RecycleNodes(b []Node) {
-	e.mu.Lock()
-	defer e.mu.Unlock()
 	b = b[:0]
 	e.bufferN = append(e.bufferN, b)
 }

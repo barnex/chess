@@ -36,7 +36,7 @@ var (
 	flagE = flag.String("e", "crusher", "opponent: tarr|riker|worf|troi|picard|crusher")
 	flagV = flag.Bool("v", false, "verbose output")
 	flagB = flag.Bool("b", false, "human plays as black")
-	flagL = flag.String("l", "chess.log", "log file")
+	flagL = flag.String("l", "", "log file")
 )
 
 var engines = map[string]func() Engine{
