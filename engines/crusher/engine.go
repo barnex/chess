@@ -5,7 +5,9 @@ import (
 	"log"
 	"math"
 	"math/rand"
+	"runtime"
 	"sort"
+	"sync"
 
 	"github.com/barnex/chess"
 )
@@ -24,7 +26,7 @@ type E struct {
 	EnableAlphaBeta                  bool
 	EnableSort                       bool
 	EnableRandom                     bool
-	Weight                           [2]float64
+	EnableStrategy                   bool
 	CapturePenalty                   float64
 	evals, alphaCutoffs, betaCutoffs int
 }
@@ -53,7 +55,10 @@ func (e *E) Move(b *chess.Board, c chess.Color) (chess.Move, float64) {
 			beta = min(beta, bv)
 		}
 		if e.EnableRandom {
-			v += rand.Float64() / (1e9)
+			v += rand.Float64() / (1e6)
+		}
+		if e.EnableStrategy {
+			v += e.Strategic(b) / (1000)
 		}
 		mv[i] = node{m, v}
 	}
@@ -67,46 +72,47 @@ func (e *E) Move(b *chess.Board, c chess.Color) (chess.Move, float64) {
 	} else {
 		sort.Sort(asc(mv))
 	}
-	log.Print(c, el.evals, el.alphaCutoffs, el.betaCutoffs)
+	log.Println(c, "evals:", el.evals, "alpha cutoffs:", el.alphaCutoffs, "beta cutoffs:", el.betaCutoffs)
 
-	//log.Print("refining...")
+	log.Print("refining...")
 
-	//N := runtime.NumCPU()
-	//if N > len(mv) {
-	//	N = len(mv)
-	//}
+	N := runtime.NumCPU()
+	if N > len(mv) {
+		N = len(mv)
+	}
 
-	//var wg sync.WaitGroup
-	//for i := 0; i < N; i++ {
-	//	wg.Add(1)
-	//	go func(i int) {
-	//		defer wg.Done()
-	//		e1 := e
-	//		e := New()
-	//		e.Weight = e1.Weight
-	//		e.depth = e1.depth
-	//		b := b.WithMove(mv[i].Move)
-	//		root := &Node{board: *b, value: MaterialValue(b)}
-	//		_, v := e.AlphaBeta(root, -c, 5, -inf, inf)
-	//		mv[i].Value = v
-	//	}(i)
-	//}
+	var wg sync.WaitGroup
+	for i := 0; i < N; i++ {
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
+			el := &Enginelet{e: e}
+			b := b.WithMove(mv[i].Move)
+			root := &Node{board: *b, value: MaterialValue(b)}
+			v := el.AlphaBeta(root, -c, e.depth2-1, -inf, inf)
+			if el.e.EnableStrategy {
+				v += e.Strategic(b) / (1000)
+			}
+			mv[i].Value = v
+			log.Println(c, "evals:", el.evals, "alpha cutoffs:", el.alphaCutoffs, "beta cutoffs:", el.betaCutoffs)
+		}(i)
+	}
 
-	//wg.Wait()
+	wg.Wait()
 
-	//for i := range mv {
-	//	if isCapture(b, mv[i].Move) {
-	//		mv[i].Value -= e.CapturePenalty * float64(c)
-	//	}
-	//}
+	for i := range mv {
+		if isCapture(b, mv[i].Move) {
+			mv[i].Value -= e.CapturePenalty * float64(c)
+		}
+	}
 
-	//if c == chess.White {
-	//	sort.Sort(desc(mv))
-	//} else {
-	//	sort.Sort(asc(mv))
-	//}
+	if c == chess.White {
+		sort.Sort(desc(mv))
+	} else {
+		sort.Sort(asc(mv))
+	}
 
-	//log.Print(mv[:N])
+	log.Print(mv[:N])
 
 	return mv[0].Move, mv[0].Value
 }

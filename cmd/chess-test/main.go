@@ -2,6 +2,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -11,21 +12,30 @@ import (
 
 	"github.com/barnex/chess"
 	"github.com/barnex/chess/engines/crusher"
-	"github.com/barnex/chess/engines/picard"
 )
 
+var flagV = flag.Bool("v", false, "verbose output")
+
 func main() {
+	flag.Parse()
 
 	rand.Seed(time.Now().UnixNano())
 	log.SetFlags(0)
-	log.SetOutput(ioutil.Discard)
+	if !*flagV {
+		log.SetOutput(ioutil.Discard)
+	}
 
 	//engineA := tarr.New(tarr.Heuristic2)
 	//engineA := riker.New(2)
 	//engineA := worf.New(3)
 	//engineA := troi.New(3)
-	engineA := picard.NewOpts(2)
-	engineB := crusher.New(2, 0)
+	engineA := crusher.New(3, 0)
+	engineA.EnableRandom = true
+	engineA.EnableStrategy = false
+
+	engineB := crusher.New(3, 0)
+	engineB.EnableRandom = true
+	engineB.EnableStrategy = true
 
 	var (
 		totalMoves int

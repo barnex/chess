@@ -1,6 +1,8 @@
 package crusher
 
 import (
+	"log"
+
 	"github.com/barnex/chess"
 )
 
@@ -31,7 +33,8 @@ func (e *E) Strategic(b *chess.Board) float64 {
 		}
 	}
 
-	return mobility*e.Weight[0] + protection*e.Weight[1]
+	log.Println("mobility:", mobility, "protection:", protection)
+	return mobility + protection*20
 }
 
 func posVal(c chess.Color) *[64]float64 {
