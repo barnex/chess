@@ -33,20 +33,19 @@ import (
 )
 
 var (
-	flagD = flag.Int("d", 2, "depth")
 	flagE = flag.String("e", "crusher", "opponent: tarr|riker|worf|troi|picard|crusher")
 	flagV = flag.Bool("v", false, "verbose output")
-	flagB = flag.Bool("b", false, "play as black")
+	flagB = flag.Bool("b", false, "human plays as black")
 	flagL = flag.String("l", "chess.log", "log file")
 )
 
 var engines = map[string]func() Engine{
 	"tarr":  func() Engine { return tarr.New(tarr.Heuristic2) },
-	"riker": func() Engine { return riker.New(*flagD - 1) },
-	"worf":  func() Engine { return worf.New(*flagD - 1) },
-	"troi":  func() Engine { return troi.New(*flagD - 1) },
+	"riker": func() Engine { return riker.New(2) },
+	"worf":  func() Engine { return worf.New(3) },
+	"troi":  func() Engine { return troi.New(3) },
 	"picard": func() Engine {
-		e := picard.NewOpts(*flagD)
+		e := picard.NewOpts(4)
 		e.Weight[0] = 0.001
 		e.Weight[1] = 0.002
 		return e
@@ -86,10 +85,10 @@ func main() {
 	var players [2]Engine
 	if *flagB {
 		players = [2]Engine{ai(), Stdin("black: ")}
-		msg = fmt.Sprintf("White: %v%v\nBlack: you\n", *flagE, *flagD)
+		msg = fmt.Sprintf("White: %v\nBlack: you\n", *flagE)
 	} else {
 		players = [2]Engine{Stdin("white: "), ai()}
-		msg = fmt.Sprintf("White: you\nBlack: %v%v\n", *flagE, *flagD)
+		msg = fmt.Sprintf("White: you\nBlack: %v\n", *flagE)
 	}
 
 	b = NewBoard()
