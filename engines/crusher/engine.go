@@ -74,45 +74,47 @@ func (e *E) Move(b *chess.Board, c chess.Color) (chess.Move, float64) {
 	}
 	log.Println(c, "evals:", el.evals, "alpha cutoffs:", el.alphaCutoffs, "beta cutoffs:", el.betaCutoffs)
 
-	log.Print("refining...")
+	if e.depth2 > 0 {
+		log.Print("refining...")
 
-	N := runtime.NumCPU()
-	if N > len(mv) {
-		N = len(mv)
-	}
-
-	var wg sync.WaitGroup
-	for i := 0; i < N; i++ {
-		wg.Add(1)
-		go func(i int) {
-			defer wg.Done()
-			el := &Enginelet{e: e}
-			b := b.WithMove(mv[i].Move)
-			root := &Node{board: *b, value: MaterialValue(b)}
-			v := el.AlphaBeta(root, -c, e.depth2-1, -inf, inf)
-			if el.e.EnableStrategy {
-				v += e.Strategic(b) / (1000)
-			}
-			mv[i].Value = v
-			log.Println(c, "evals:", el.evals, "alpha cutoffs:", el.alphaCutoffs, "beta cutoffs:", el.betaCutoffs)
-		}(i)
-	}
-
-	wg.Wait()
-
-	for i := range mv {
-		if isCapture(b, mv[i].Move) {
-			mv[i].Value -= e.CapturePenalty * float64(c)
+		N := runtime.NumCPU()
+		if N > len(mv) {
+			N = len(mv)
 		}
-	}
 
-	if c == chess.White {
-		sort.Sort(desc(mv))
-	} else {
-		sort.Sort(asc(mv))
-	}
+		var wg sync.WaitGroup
+		for i := 0; i < N; i++ {
+			wg.Add(1)
+			go func(i int) {
+				defer wg.Done()
+				el := &Enginelet{e: e}
+				b := b.WithMove(mv[i].Move)
+				root := &Node{board: *b, value: MaterialValue(b)}
+				v := el.AlphaBeta(root, -c, e.depth2-1, -inf, inf)
+				if el.e.EnableStrategy {
+					v += e.Strategic(b) / (1000)
+				}
+				mv[i].Value = v
+				log.Println(c, "evals:", el.evals, "alpha cutoffs:", el.alphaCutoffs, "beta cutoffs:", el.betaCutoffs)
+			}(i)
+		}
 
-	log.Print(mv[:N])
+		wg.Wait()
+
+		for i := range mv {
+			if isCapture(b, mv[i].Move) {
+				mv[i].Value -= e.CapturePenalty * float64(c)
+			}
+		}
+
+		if c == chess.White {
+			sort.Sort(desc(mv))
+		} else {
+			sort.Sort(asc(mv))
+		}
+
+		log.Print(mv[:N])
+	}
 
 	return mv[0].Move, mv[0].Value
 }

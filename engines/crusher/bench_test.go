@@ -58,3 +58,22 @@ func BenchmarkAlphaBetaSort(b *testing.B) {
 		}
 	}
 }
+
+func BenchmarkRefine(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		const d1 = 4
+		const d2 = 6
+		const N = 20
+		{
+			ea := New(d1, d2)
+			ea.EnableAlphaBeta = true
+			ea.EnableSort = true
+			eb := New(d1, d2)
+			eb.EnableAlphaBeta = true
+			eb.EnableSort = true
+
+			game(ea, eb, N)
+			b.SetBytes(int64(ea.evals + eb.evals))
+		}
+	}
+}
