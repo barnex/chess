@@ -3,24 +3,27 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 	"math"
 	"math/rand"
 	"time"
 
 	"github.com/barnex/chess"
+	"github.com/barnex/chess/engines/crusher"
 	"github.com/barnex/chess/engines/picard"
 )
 
 func main() {
 
 	rand.Seed(time.Now().UnixNano())
+	log.SetFlags(0)
+	log.SetOutput(ioutil.Discard)
 
-	engineA := picard.NewOpts(4)
-	engineB := picard.NewOpts(4)
+	engineA := picard.New(4)
+	engineB := crusher.New()
 	engineB.Weight[0] = 0.001
 	engineB.Weight[1] = 0.002
-	//	engineB.Weight[3] = 0.003
 
 	var (
 		totalMoves int

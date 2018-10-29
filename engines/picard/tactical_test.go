@@ -1,10 +1,17 @@
 package picard
 
 import (
+	"io/ioutil"
+	"log"
 	"testing"
 
 	. "github.com/barnex/chess"
 )
+
+func init() {
+	log.SetFlags(0)
+	log.SetOutput(ioutil.Discard)
+}
 
 // Requires zero lookahead.
 func TestTactical0(t *testing.T) {

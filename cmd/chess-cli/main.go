@@ -18,10 +18,13 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"log"
+	"os"
 	"time"
 
 	. "github.com/barnex/chess"
+	"github.com/barnex/chess/engines/crusher"
 	"github.com/barnex/chess/engines/picard"
 	"github.com/barnex/chess/engines/riker"
 	"github.com/barnex/chess/engines/tarr"
@@ -31,9 +34,10 @@ import (
 
 var (
 	flagD = flag.Int("d", 2, "depth")
-	flagE = flag.String("e", "picard", "opponent: tarr|riker|worf|troi|picard")
+	flagE = flag.String("e", "crusher", "opponent: tarr|riker|worf|troi|picard|crusher")
 	flagV = flag.Bool("v", false, "verbose output")
 	flagB = flag.Bool("b", false, "play as black")
+	flagL = flag.String("l", "chess.log", "log file")
 )
 
 var engines = map[string]func() Engine{
@@ -47,6 +51,12 @@ var engines = map[string]func() Engine{
 		e.Weight[1] = 0.002
 		return e
 	},
+	"crusher": func() Engine {
+		e := crusher.New()
+		e.Weight[0] = 0.001
+		e.Weight[1] = 0.002
+		return e
+	},
 }
 
 var (
@@ -55,6 +65,17 @@ var (
 
 func main() {
 	flag.Parse()
+	log.SetFlags(0)
+	log.SetOutput(ioutil.Discard)
+	if *flagL != "" {
+		f, err := os.Create(*flagL)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer f.Close()
+		log.SetOutput(f)
+	}
+	log.Println("\nChess")
 
 	ai, ok := engines[*flagE]
 	if !ok {
@@ -80,6 +101,7 @@ func main() {
 	moveNum := 0
 	allCap := map[Color][]Piece{}
 	for b.Winner() == Nobody {
+		log.Println("\nmove:", moveNum)
 
 		var buf bytes.Buffer // text beside the board
 		printf := func(f string, x ...interface{}) {
