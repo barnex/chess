@@ -20,12 +20,13 @@ func New(depth1, depth2 int) *E {
 }
 
 type E struct {
-	depth1, depth2  int
-	EnableAlphaBeta bool
-	EnableSort      bool
-	EnableRandom    bool
-	Weight          [2]float64
-	CapturePenalty  float64
+	depth1, depth2                   int
+	EnableAlphaBeta                  bool
+	EnableSort                       bool
+	EnableRandom                     bool
+	Weight                           [2]float64
+	CapturePenalty                   float64
+	evals, alphaCutoffs, betaCutoffs int
 }
 
 func (e *E) Move(b *chess.Board, c chess.Color) (chess.Move, float64) {
@@ -56,6 +57,10 @@ func (e *E) Move(b *chess.Board, c chess.Color) (chess.Move, float64) {
 		}
 		mv[i] = node{m, v}
 	}
+
+	e.evals += el.evals
+	e.alphaCutoffs += el.alphaCutoffs
+	e.betaCutoffs += el.betaCutoffs
 
 	if c == chess.White {
 		sort.Sort(desc(mv))

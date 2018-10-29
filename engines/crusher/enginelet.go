@@ -41,9 +41,9 @@ func (e *Enginelet) AlphaBeta(n *Node, currPlayer chess.Color, depth int, alpha,
 	// payed back near the bottom of the tree.
 	if depth > 1 && e.e.EnableSort {
 		if currPlayer == chess.White {
-			sort.Sort(ascending(children))
-		} else {
 			sort.Sort(descending(children))
+		} else {
+			sort.Sort(ascending(children))
 		}
 	}
 
