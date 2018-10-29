@@ -10,8 +10,8 @@ import (
 	"time"
 
 	"github.com/barnex/chess"
+	"github.com/barnex/chess/engines/crusher"
 	"github.com/barnex/chess/engines/picard"
-	"github.com/barnex/chess/engines/troi"
 )
 
 func main() {
@@ -23,11 +23,9 @@ func main() {
 	//engineA := tarr.New(tarr.Heuristic2)
 	//engineA := riker.New(2)
 	//engineA := worf.New(3)
-	engineA := troi.New(3)
-	engineB := picard.NewOpts(4)
-	engineB.Weight[0] = 0.001
-	engineB.Weight[1] = 0.002
-	//engineB := crusher.New()
+	//engineA := troi.New(3)
+	engineA := picard.NewOpts(2)
+	engineB := crusher.New(2, 0)
 
 	var (
 		totalMoves int

@@ -100,7 +100,7 @@ func (e *E) AlphaBeta(n *Node, currPlayer chess.Color, depth int, alpha, beta fl
 	for _, ch := range children {
 		_, v := e.AlphaBeta(&ch, -currPlayer, depth-1, alpha, beta)
 
-		if depth == e.depth-1 {
+		if depth == e.depth-1 && e.Weight != ([4]float64{}) {
 			v += e.Strategic(&ch.board)
 		}
 

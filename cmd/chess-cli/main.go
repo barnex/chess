@@ -51,9 +51,10 @@ var engines = map[string]func() Engine{
 		return e
 	},
 	"crusher": func() Engine {
-		e := crusher.New()
+		e := crusher.New(4, 2)
 		e.Weight[0] = 0.001
 		e.Weight[1] = 0.002
+		e.CapturePenalty = 0.5
 		return e
 	},
 }
