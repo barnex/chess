@@ -51,4 +51,4 @@ Adds strategy to worf's tactics. Tries to protect pieces, keep them mobile, and 
 Like troi, but employs alpha-beta pruning instead of simple minimax, allowing to calculate 4 moves ahead. Strategy is a bit more optimized too.
 
 ## crusher
-Has far better strategy, tries to control the center of the board. First calculates 4 moves ahead, then deepens to 6 moves for the most promising candidates.
+Has better strategy, tries to control the center of the board. First calculates 6 moves ahead, then deepens to 8 moves for the most promising candidates.
