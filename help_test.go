@@ -7,11 +7,11 @@ import (
 
 func MarkAllMoves(b *Board, typ ...Piece) {
 	for _, typ := range typ {
-		for p := RC(0, 0); p.Valid(); p = p.Next() {
-			if b.At(p.Index()) == typ {
-				fmt.Printf("moves for %v%v\n", b.At(p.Index()), p)
+		for i := range b {
+			if b.At(Index(i)) == typ {
+				fmt.Printf("moves for %v%v\n", b.At(Index(i)), Index(i).Pos())
 				var moves []Move
-				Moves(b, p.Index(), &moves)
+				Moves(b, Index(i), &moves)
 				mark(b, moves)
 				fmt.Println()
 			}

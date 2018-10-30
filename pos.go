@@ -34,13 +34,13 @@ func (p Pos) Add(d Pos) Pos {
 	return Pos{p[0] + d[0], p[1] + d[1]}
 }
 
-func (p Pos) Next() Pos {
-	n := p.Add(Pos{0, 1})
-	if n.Col() == 8 {
-		n = RC(p.Row()+1, 0)
-	}
-	return n
-}
+//func (p Pos) Next() Pos {
+//	n := p.Add(Pos{0, 1})
+//	if n.Col() == 8 {
+//		n = RC(p.Row()+1, 0)
+//	}
+//	return n
+//}
 
 func (p Pos) String() string {
 	if !p.Valid() {
@@ -50,9 +50,9 @@ func (p Pos) String() string {
 }
 
 func (p Pos) index() int {
-	if !p.Valid() {
-		panic(fmt.Errorf("pos out of bounds: %v", p))
-	}
+	//if !p.Valid() {
+	//	panic(fmt.Errorf("pos out of bounds: %v", p))
+	//}
 	return int(p[0]<<3 | p[1])
 }
 
@@ -61,11 +61,11 @@ func (p Pos) Index() Index {
 }
 
 // TODO: rm
-func I2P(i int) Pos {
-	c := i & 0x7
-	r := i >> 3
-	return RC(r, c)
-}
+//func I2P(i int) Pos {
+//	c := i & 0x7
+//	r := i >> 3
+//	return RC(r, c)
+//}
 
 func RC(r, c int) Pos {
 	//if r < 0 || r > 7 || c < 0 || c > 7 {

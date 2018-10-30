@@ -31,10 +31,6 @@ func Upright(b *Board) *Board {
 	return b2
 }
 
-//func (b *Board) At(p Pos) Piece {
-//	return b[int(p[0]<<3|p[1])]
-//}
-
 func (b *Board) At(p Index) Piece {
 	return b[p]
 }
