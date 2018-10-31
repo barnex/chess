@@ -27,16 +27,6 @@ func main() {
 		log.SetOutput(ioutil.Discard)
 	}
 
-	//engineA := tarr.New(tarr.Heuristic2)
-	//engineA := riker.New(2)
-	//engineA := worf.New(3)
-	//engineA := troi.New(3)
-	engineA := crusher.New(3, 0)
-	engineA.CapturePenalty = 0.
-
-	engineB := crusher.New(3, 0)
-	engineB.CapturePenalty = 0.
-
 	var (
 		mu         sync.Mutex
 		totalMoves int
@@ -47,6 +37,19 @@ func main() {
 
 	for i := 0; i < runtime.NumCPU(); i++ {
 		go func() {
+
+			engineA := crusher.New(4, 0)
+			engineA.CapturePenalty = 0.
+			engineA.EnableStrategy = true
+			engineA.WMobility = 1
+			engineA.WProtection = 1
+
+			engineB := crusher.New(4, 0)
+			engineB.CapturePenalty = 0.
+			engineA.EnableStrategy = true
+			engineB.WMobility = 1
+			engineB.WProtection = 1
+
 			for i := 0; i < numRounds; i++ {
 				w1, m1 := Game(engineA, engineB)
 

@@ -34,7 +34,7 @@ func (e *E) Strategic(b *chess.Board) float64 {
 	}
 
 	log.Println("mobility:", mobility, "protection:", protection)
-	return mobility + protection*20
+	return (mobility*e.WMobility + protection*e.WProtection) / 1000
 }
 
 func posVal(c chess.Color) *[64]float64 {

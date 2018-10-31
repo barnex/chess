@@ -20,8 +20,9 @@ func New(depth1, depth2 int) *E {
 		EnableSort:      true,
 		EnableStrategy:  true,
 		CapturePenalty:  0.5,
-		//EnableRandom: true,
-		//	Weight: [2]float64{0.001, 0.002},
+		WMobility:       1,
+		WProtection:     1,
+		EnableRandom:    true,
 	}
 }
 
@@ -32,6 +33,8 @@ type E struct {
 	EnableRandom                     bool
 	EnableStrategy                   bool
 	CapturePenalty                   float64
+	WMobility                        float64
+	WProtection                      float64
 	evals, alphaCutoffs, betaCutoffs int
 }
 
@@ -58,9 +61,9 @@ func (e *E) Move(b *chess.Board, c chess.Color) (chess.Move, float64) {
 			bv = min(bv, v)
 			beta = min(beta, bv)
 		}
-		if e.EnableStrategy {
-			v += e.Strategic(b) / (1000)
-		}
+		//if e.EnableStrategy {
+		//	v += e.Strategic(b) / (1000)
+		//}
 		mv[i] = node{m, v}
 	}
 
@@ -113,12 +116,11 @@ func (e *E) Move(b *chess.Board, c chess.Color) (chess.Move, float64) {
 		} else {
 			sort.Sort(asc(mv))
 		}
-
 		log.Print(mv[:N])
 	}
 
 	sel := 0
-	if e.EnableRandom && rand.Intn(3) == 0 && math.Abs(mv[0].Value-mv[1].Value) < 1 {
+	if e.EnableRandom && rand.Intn(3) == 0 && math.Abs(mv[0].Value-mv[1].Value) < 0.5 {
 		log.Println("randomly selecting", mv[1], "over", mv[0])
 		sel = 1
 	}

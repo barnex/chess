@@ -12,15 +12,16 @@ func TestAlphaBetaChange(t *testing.T) {
 	const N = 20
 	var b1, b2 chess.Board
 	{
-		ea := New(d, 0)
-		eb := New(d, 0)
+		ea := disable(New(d, 0))
+		eb := disable(New(d, 0))
 
 		b1 = *game(ea, eb, N)
 	}
 	{
-		ea := New(d, 0)
+		ea := disable(New(d, 0))
 		ea.EnableAlphaBeta = true
-		eb := New(d, 0)
+
+		eb := disable(New(d, 0))
 		eb.EnableAlphaBeta = true
 
 		b2 = *game(ea, eb, N)
@@ -28,7 +29,14 @@ func TestAlphaBetaChange(t *testing.T) {
 	if b1 != b2 {
 		t.Errorf("have:\n%vwant:\n%v", b2.String(), b1.String())
 	}
+}
 
+func disable(e *E) *E {
+	e.EnableAlphaBeta = false
+	e.EnableRandom = false
+	e.EnableStrategy = false
+	e.EnableSort = false
+	return e
 }
 
 func game(ea, eb chess.Engine, moves int) *chess.Board {

@@ -52,6 +52,9 @@ func (e *Enginelet) AlphaBeta(n *Node, currPlayer chess.Color, depth int, alpha,
 		bv = -inf
 		for _, c := range children {
 			v := e.AlphaBeta(&c, -currPlayer, depth-1, alpha, beta)
+			if e.e.EnableStrategy && depth == e.e.depth1-1 {
+				v += e.e.Strategic(&c.board)
+			}
 			bv = max(bv, v)
 			alpha = max(alpha, bv)
 			if alpha >= beta && e.e.EnableAlphaBeta {
@@ -64,6 +67,9 @@ func (e *Enginelet) AlphaBeta(n *Node, currPlayer chess.Color, depth int, alpha,
 		bv = inf
 		for _, c := range children {
 			v := e.AlphaBeta(&c, -currPlayer, depth-1, alpha, beta)
+			if e.e.EnableStrategy && depth == e.e.depth1-1 {
+				v += e.e.Strategic(&c.board)
+			}
 			bv = min(bv, v)
 			beta = min(beta, bv)
 			if alpha >= beta && e.e.EnableAlphaBeta {
