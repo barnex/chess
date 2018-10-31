@@ -14,8 +14,12 @@ import (
 
 func New(depth1, depth2 int) *E {
 	return &E{
-		depth1: depth1,
-		depth2: depth2,
+		depth1:          depth1,
+		depth2:          depth2,
+		EnableAlphaBeta: true,
+		EnableSort:      true,
+		EnableStrategy:  true,
+		CapturePenalty:  0.5,
 		//EnableRandom: true,
 		//	Weight: [2]float64{0.001, 0.002},
 	}
@@ -53,9 +57,6 @@ func (e *E) Move(b *chess.Board, c chess.Color) (chess.Move, float64) {
 		} else {
 			bv = min(bv, v)
 			beta = min(beta, bv)
-		}
-		if e.EnableRandom {
-			v += rand.Float64() / (1e6)
 		}
 		if e.EnableStrategy {
 			v += e.Strategic(b) / (1000)
@@ -116,7 +117,12 @@ func (e *E) Move(b *chess.Board, c chess.Color) (chess.Move, float64) {
 		log.Print(mv[:N])
 	}
 
-	return mv[0].Move, mv[0].Value
+	sel := 0
+	if e.EnableRandom && rand.Intn(3) == 0 && math.Abs(mv[0].Value-mv[1].Value) < 1 {
+		log.Println("randomly selecting", mv[1], "over", mv[0])
+		sel = 1
+	}
+	return mv[sel].Move, mv[sel].Value
 }
 
 func isCapture(b *chess.Board, m chess.Move) bool {
