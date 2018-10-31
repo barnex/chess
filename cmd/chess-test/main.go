@@ -8,6 +8,8 @@ import (
 	"log"
 	"math"
 	"math/rand"
+	"runtime"
+	"sync"
 	"time"
 
 	"github.com/barnex/chess"
@@ -30,44 +32,49 @@ func main() {
 	//engineA := worf.New(3)
 	//engineA := troi.New(3)
 	engineA := crusher.New(3, 0)
-	engineA.EnableRandom = true
-	engineA.EnableStrategy = false
+	engineA.CapturePenalty = 0.
 
 	engineB := crusher.New(3, 0)
-	engineB.EnableRandom = true
-	engineB.EnableStrategy = true
+	engineB.CapturePenalty = 0.
 
 	var (
+		mu         sync.Mutex
 		totalMoves int
 		wins       [3]int
 	)
 
 	numRounds := 50000
 
-	for i := 0; i < numRounds; i++ {
-		w1, m1 := Game(engineA, engineB)
-		totalMoves += m1
+	for i := 0; i < runtime.NumCPU(); i++ {
+		go func() {
+			for i := 0; i < numRounds; i++ {
+				w1, m1 := Game(engineA, engineB)
 
-		w2, m2 := Game(engineB, engineA)
-		totalMoves += m2
+				w2, m2 := Game(engineB, engineA)
 
-		wins[w1+1]++
-		wins[-w2+1]++
+				mu.Lock()
+				totalMoves += m1
+				totalMoves += m2
+				wins[w1+1]++
+				wins[-w2+1]++
+				winA := float64(wins[2])
+				winB := float64(wins[0])
+				winX := float64(wins[1])
+				totalGames := wins[0] + wins[1] + wins[2]
+				mu.Unlock()
 
-		winA := float64(wins[2])
-		winB := float64(wins[0])
-		winX := float64(wins[1])
-		totalGames := wins[0] + wins[1] + wins[2]
+				score := winB / (winA + winB)
+				err := 1 * math.Sqrt(winB+1) / (winA + winB) // TODO: use bernouilli stats
+				draw := winX / (winA + winB + winX)
+				movesPerGame := float64(totalMoves) / (winA + winB + winX)
 
-		score := winB / (winA + winB)
-		err := 1 * math.Sqrt(winB+1) / (winA + winB) // TODO: use bernouilli stats
-		draw := winX / (winA + winB + winX)
-		movesPerGame := float64(totalMoves) / (winA + winB + winX)
-
-		fmt.Printf("%.1f%% +/- %.1f%% (%d games, %.1f%% draw, %.1f moves/game)\n",
-			100*score, 100*err, totalGames, 100*draw, movesPerGame)
-
+				fmt.Printf("%.1f%% +/- %.1f%% (%d games, %.1f%% draw, %.1f moves/game)\n",
+					100*score, 100*err, totalGames, 100*draw, movesPerGame)
+			}
+		}()
 	}
+
+	<-(make(chan int))
 }
 
 func Game(we, be chess.Engine) (winner chess.Color, moves int) {
